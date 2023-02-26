@@ -11,7 +11,7 @@ Com TANOS você tem as 6 joias do infinito e um poder inimaginável para control
 <br>
 💎 Joia do Serviço - Te da o poder de cadastrar todos os serviços que você realiza e os detalhes do serviço, para que quando inicie um projeto os detalhes pré-definidos já irão facilitar seu trabalho.
 <br>
-💎 Joia do Estoque - Caso seus serviços utilizem materiais físicos, você também pode cadastrar no sistema e conectá-lo aos seus serviços. Assim você tem o poder de controlar seu estoque.  
+💎 Joia do Estoque - Caso seus serviços utilizem materiais físicos, você também pode cadastrar no sistema e conectá-lo aos seus serviços. Assim você tem o poder de controlar seu estoque.
 <br>
 💎 Joia dos Gastos - Com ela você tem o poder da organização financeira, controle sobre todos os seus gastos pessoais ou profissionais. Tudo categorizado e personalizado a sua maneira. 
 <br>
