@@ -1,15 +1,10 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.sass'
+import { LoginPage } from './screens/LoginPage'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <div className="App">
-      <div className="container">
-        Login
-      </div>
+      <LoginPage/>
     </div>
   )
 }
