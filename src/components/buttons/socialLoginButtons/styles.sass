@@ -1,0 +1,52 @@
+@use '../../../variables'
+
+.loginWith
+    display: flex
+    align-items: center
+    height: 55px
+    margin-top: 1rem
+    margin-bottom: 35px
+    gap: 15px
+
+.loginWithGoogle
+    border: none
+    border-radius: 50%
+
+    width: 50px
+    height: 50px
+
+    font-size: 35px
+
+    display: flex
+    justify-content: center
+    align-items: center
+    background: variables.$PrimaryTextColor
+
+.loginWithFacebook
+    border: none
+    border-radius: 50%
+    overflow: hidden
+
+    width: 50px
+    height: 50px
+
+    font-size: 35px
+    color: variables.$PrimaryTextColor
+
+    display: flex
+    justify-content: flex-end
+    align-items: flex-end
+    padding-right: 5px
+    padding-bottom: 5px
+    background: -webkit-linear-gradient(to left, #214AB3, #3DB6D0)
+    background: -o-linear-gradient(to left, #214AB3, #3DB6D0)
+    background: -moz-linear-gradient(to left, #214AB3, #3DB6D0)
+    background: linear-gradient(to left, #214AB3, #3DB6D0)
+
+.loginWithGoogle:hover, .loginWithFacebook:hover
+    transition: all 0.2s ease-in-out
+    cursor: pointer
+    width: 55px
+    height: 55px
+    font-size: 40px
+    

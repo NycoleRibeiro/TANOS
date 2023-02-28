@@ -3,6 +3,7 @@ import './styles.sass';
 
 import { LoginInput } from '../../components/inputs/loginInput';
 import { BlueGradientButton } from '../../components/buttons/blueGradientButton';
+import { SocialLoginButtons } from '../../components/buttons/socialLoginButtons';
 
 export const LoginPage = () => {
 
@@ -40,10 +41,7 @@ export const LoginPage = () => {
         
 
         <p className="loginWithText">ou faça login com:</p>
-        <div className="loginWith">
-          <button className="loginWithGoogle">G</button>
-          <button className="loginWithFacebook">f</button>
-        </div>
+        <SocialLoginButtons/>
       </form>
     </div>
   )
