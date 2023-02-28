@@ -14,7 +14,7 @@
   background: transparent
   color: #ffffff
 
-.main-input:focus
+.main-input:focus, .has-value
   outline: none
   border-image-slice: 1
 
@@ -35,7 +35,6 @@
   -moz-transition: 0.2s ease all
   -webkit-transition: 0.2s ease all
 
-.main-input:focus ~ .label-email,
-.main-input:valid ~ .label-email
+.main-input:focus ~ .label-email, .has-value ~ .label-email
   top: -20px
   font-size: 14px

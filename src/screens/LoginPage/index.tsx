@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import './styles.sass'
+import './styles.sass';
 
-import { LoginInput } from '../../components/inputs/loginInput'
+import { LoginInput } from '../../components/inputs/loginInput';
 
 export const LoginPage = () => {
 
@@ -10,6 +10,14 @@ export const LoginPage = () => {
 
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+
+  const handleEmail = (email:string) => {
+    setEmail(email);
+  }
+
+  const handlePassword = (password:string) => {
+    setPassword(password);
+  }
 
   return (
     <div className="container">
@@ -20,10 +28,10 @@ export const LoginPage = () => {
         na palma da sua mão.
         </p>
       <form className="form">
-        <LoginInput type="email" placeholder="Email"/>
+        <LoginInput type="email" placeholder="Email" onChange={handleEmail}/>
         {emailError && <p className="error">Por favor, digite um email válido.</p>}
 
-        <LoginInput type="password" placeholder="Senha"/>
+        <LoginInput type="password" placeholder="Senha" onChange={handlePassword}/>
         {passwordError && <p className="error">Sua senha deve conter pelo menos 6 dígitos, uma letra e um número.</p>}
 
         <div className="container-login-form-btn">
