@@ -21,6 +21,33 @@ export const LoginPage = () => {
     setPassword(password);
   }
 
+  const handleLogin = () => {
+    let emailValid = false;
+    let passwordValid = false;
+    // Validação de email
+    if (email === '') {
+      setEmailError(true);
+    } else {
+      const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+      emailValid = regexEmail.test(email);
+      setEmailError(!emailValid ? true : false);
+    }
+    // Validação de senha
+    if (password === '') {
+      setPasswordError(true);
+    } else {
+      const regexPassword = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/;
+      passwordValid = regexPassword.test(password);
+      setPasswordError(!passwordValid? true : false);
+    }
+
+    if (emailValid && passwordValid) {
+      console.log('Logado com sucesso!');
+      console.log(email);
+      console.log(password);
+    }
+  }
+
   return (
     <div className="container">
       <h1 className="logo">TANOS</h1>
@@ -36,7 +63,7 @@ export const LoginPage = () => {
         {passwordError && <p className="error">Sua senha deve conter pelo menos 6 dígitos, uma letra e um número.</p>}
 
         <div className="container-login-form-btn">
-          <BlueGradientButton name="Logar"/>
+          <BlueGradientButton name="Logar" onClick={handleLogin}/>
         </div>
         
 

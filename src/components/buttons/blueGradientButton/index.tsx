@@ -3,15 +3,15 @@ import './styles.sass'
 
 type Props = {
     name: string
+    onClick: () => void
 }
 
-export const BlueGradientButton = ({ name }:Props) => {
+export const BlueGradientButton = ({ name, onClick }:Props) => {
   return (        
     <button 
         className="btn"
         type="button"
-        //disabled={email === "" || password === ""}
-        //onClick={handleLogin}
+        onClick={onClick}
         >
         {name}
     </button>
