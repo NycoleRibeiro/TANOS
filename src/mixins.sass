@@ -6,8 +6,16 @@
     font-weight: 400
 
     /* BlueGradient */
-    background: variables.$BlueGradient
+    background: linear-gradient(-75deg, #3DB6D0 20%, #214AB3 40%, #214AB3 60%, #3DB6D0 80%)
+    background-size: 200% auto
     -webkit-background-clip: text
     -webkit-text-fill-color: transparent
     background-clip: text
     text-fill-color: transparent
+
+    animation: shine 2s linear infinite
+    @keyframes shine
+        to
+            background-position: 200% center
+        
+    
