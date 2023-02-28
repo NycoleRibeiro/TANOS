@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './styles.sass';
 
 import { LoginInput } from '../../components/inputs/loginInput';
+import { BlueGradientButton } from '../../components/buttons/blueGradientButton';
 
 export const LoginPage = () => {
 
@@ -24,9 +25,8 @@ export const LoginPage = () => {
       <h1 className="logo">TANOS</h1>
       <p className="slogan">
         O <span>poder</span> de <span>controlar seu negócio</span>,
-        <br/> 
-        na palma da sua mão.
-        </p>
+        <br/> na palma da sua mão.
+      </p>
       <form className="form">
         <LoginInput type="email" placeholder="Email" onChange={handleEmail}/>
         {emailError && <p className="error">Por favor, digite um email válido.</p>}
@@ -35,15 +35,9 @@ export const LoginPage = () => {
         {passwordError && <p className="error">Sua senha deve conter pelo menos 6 dígitos, uma letra e um número.</p>}
 
         <div className="container-login-form-btn">
-          <button 
-          className="login-form-btn"
-          type="button"
-          disabled={email === "" || password === ""}
-          //onClick={handleLogin}
-          >
-            Logar
-          </button>
+          <BlueGradientButton name="Logar"/>
         </div>
+        
 
         <p className="loginWithText">ou faça login com:</p>
         <div className="loginWith">
