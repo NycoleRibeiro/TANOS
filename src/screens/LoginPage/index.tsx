@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import './styles.sass'
 
+import { LoginInput } from '../../components/inputs/loginInput'
+
 export const LoginPage = () => {
 
   const [email, setEmail] = useState('');
@@ -18,28 +20,10 @@ export const LoginPage = () => {
         na palma da sua mão.
         </p>
       <form className="form">
-        <div className="wrap-input">
-          <input 
-          className={email !== "" ? "input has-val" : "input"}
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          //onBlur={validateEmail}
-          />
-          <span className="focus-input" data-placeholder="Email" />
-        </div>
+        <LoginInput type="email" placeholder="Email"/>
         {emailError && <p className="error">Por favor, digite um email válido.</p>}
 
-        <div className="wrap-input">
-          <input 
-          className={password !== "" ? "input has-val" : "input"}
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          //onBlur={validatePassword}
-          />
-          <span className="focus-input" data-placeholder="Senha" />
-        </div>
+        <LoginInput type="password" placeholder="Senha"/>
         {passwordError && <p className="error">Sua senha deve conter pelo menos 6 dígitos, uma letra e um número.</p>}
 
         <div className="container-login-form-btn">
