@@ -4,18 +4,18 @@
     display: flex
     align-items: center
     height: 55px
-    margin-top: 1rem
-    margin-bottom: 35px
+    margin-top: 1vh
+    margin-bottom: 1.5vh
     gap: 15px
 
 .loginWithGoogle
     border: none
     border-radius: 50%
 
-    width: 50px
-    height: 50px
+    width: clamp(35px, 3vw, 50px)
+    height: clamp(35px, 3vw, 50px)
 
-    font-size: 35px
+    font-size: clamp(20px, 2vw, 35px)
 
     display: flex
     justify-content: center
@@ -27,10 +27,10 @@
     border-radius: 50%
     overflow: hidden
 
-    width: 50px
-    height: 50px
+    width: clamp(35px, 3vw, 50px)
+    height: clamp(35px, 3vw, 50px)
 
-    font-size: 35px
+    font-size: clamp(20px, 2vw, 35px)
     color: variables.$PrimaryTextColor
 
     display: flex
@@ -46,7 +46,7 @@
 .loginWithGoogle:hover, .loginWithFacebook:hover
     transition: all 0.2s ease-in-out
     cursor: pointer
-    width: 55px
-    height: 55px
-    font-size: 40px
+    width: clamp(45px, 3vw, 55px)
+    height: clamp(45px, 3vw, 55px)
+    font-size: clamp(30px, 2vw, 40px)
     
