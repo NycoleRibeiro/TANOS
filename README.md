@@ -17,3 +17,8 @@ Com TANOS você tem as 6 joias do infinito e um poder inimaginável para control
 <br>
 💎 Joia do Relatório - Te da o poder da visão. Com ela você pode ver o passado e quem sabe até prever o futuro, tudo isso com um relatório mensal completo de tudo o que você precisa saber para gerenciar melhor seu negócio.
 <br>
+
+## Screenshots
+<p>
+<img src="src/assets/screenshots/telaLogin.jpg" height="500">
+</p>
