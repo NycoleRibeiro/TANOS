@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="800px" width="800px" version="1.1" id="Layer_1" viewBox="0 0 512 512" xml:space="preserve">
+<circle style="fill:#2D4452;" cx="256" cy="256" r="256"/>
+<path style="fill:#243947;" d="M488.36,363.436L416,184l-80-52H176l-80,52l131.676,326.408C236.984,511.428,246.424,512,256,512  C359,512,447.744,451.132,488.36,363.436z"/>
+<polygon style="fill:#91D8F0;" points="336,132 176,132 96,184 256,392 416,184 "/>
+<polygon style="fill:#86C8DE;" points="188,184 96,184 256,392 "/>
+<polygon style="fill:#B4E1F0;" points="176,132 96,184 188,184 "/>
+<polygon style="fill:#6CA1B3;" points="324,184 256,392 416,184 "/>
+<polygon style="fill:#7BB8CC;" points="336,132 324,184 416,184 "/>
+<polygon style="fill:#A8DEF0;" points="176,132 188,184 324,184 336,132 "/>
+</svg>
