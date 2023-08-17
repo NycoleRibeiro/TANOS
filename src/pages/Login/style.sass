@@ -1,0 +1,33 @@
+@use '../../variables' as v
+
+.container
+    background: v.$horizontalGradient
+    width: 100vw
+    height: 100vh
+    display: flex
+    align-items: center
+    justify-content: center
+    
+    .form
+        background: v.$n-10
+        display: flex
+        align-items: center
+        flex-direction: column
+        width: 25%
+        min-width: 450px
+        padding: 0 32px
+        border-radius: 10px
+        padding-bottom: 56px
+
+        h1 
+            width: 100%
+            display: flex
+            align-items: center
+            justify-content: center
+            padding: 16px
+            font-size: 56px
+            @include v.logo
+
+        .button
+            width: 50%
+            margin-top: 56px
