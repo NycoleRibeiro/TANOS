@@ -1,0 +1,42 @@
+@use '../../../variables'
+
+.group
+  position: relative
+  margin-top: 3rem
+  width: 100%
+
+.main-input 
+  font-size: 1rem
+  padding: 0.6rem 0.6rem 0.6rem 0.3rem
+  display: block
+  width: 100%
+  border: none
+  border-bottom: 2px solid variables.$p-70
+  background: transparent
+  color: #ffffff
+
+.main-input:focus, .has-value
+  outline: none
+  border-image-slice: 1
+
+  border-image-source: -webkit-linear-gradient(to left, #4F378B, #B69DF8, #4F378B)
+  border-image-source: -o-linear-gradient(to left, #4F378B, #B69DF8, #4F378B)
+  border-image-source: -moz-linear-gradient(to left, #4F378B, #B69DF8, #4F378B)
+  border-image-source: linear-gradient(to left, #4F378B, #B69DF8, #4F378B)
+
+.label-email 
+  color: variables.$n-100
+  font-size: 0.9rem
+  font-weight: normal
+  position: absolute
+  pointer-events: none
+  left: 5px
+  top: 10px
+  transition: 0.2s ease all
+  -moz-transition: 0.2s ease all
+  -webkit-transition: 0.2s ease all
+
+.main-input:focus ~ .label-email, .has-value ~ .label-email
+  top: -20px
+  font-size: 0.8rem
+  color: variables.$n-60
