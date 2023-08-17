@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap')
+    
+// COLORS
+
+$n-0: #000000
+$n-10: #1d1a22
+$n-20: #322f37
+$n-30: #49454f
+$n-40: #605d66
+$n-50: #79747e
+$n-60: #938f99
+$n-70: #aea9b4
+$n-80: #cac4d0
+$n-90: #E7E0EC
+$n-95: #F5EEFA
+$n-99: #FFFBFE
+$n-100: #FFFFFF
+
+$p-10: #21005d
+$p-20: #381E72
+$p-30: #4F378B
+$p-40: #6750A4
+$p-50: #7F67BE
+$p-60: #9A82DB
+$p-70: #B69DF8
+$p-80: #D0BCFF
+$p-90: #EADDFF
+$p-100: #F6EDFF
+
+$s-10: #1D192B
+$s-20: #332D41
+$s-30: #4A4458
+$s-40: #625B71
+$s-50: #7A7289
+$s-60: #958DA5
+$s-70: #B0A7C0
+$s-80: #CCC2DC
+$s-90: #E8DEF8
+$s-100: #F6EDFF
+
+$e-10: #410E0B
+$e-20: #601410
+$e-30: #8C1D18
+$e-40: #DC362E
+$e-50: #DC362E
+$e-60: #E46962
+$e-70: #EC928E
+$e-80: #F2B8B5
+$e-90: #F9DEDC
+$e-100: #FCEEEE
+
+$verticalGradient: linear-gradient(189deg, #4F378B 0%, #B69DF8 50.09%, #4F378B 100%)
+$horizontalGradient: linear-gradient(134deg, #4F378B 0%, #B69DF8 50.09%, #4F378B 100%)
+
+// MIXINS
+
+@mixin logo
+    font-family: 'Righteous', sans-serif
+    font-style: normal
+    font-weight: 400
+    background: linear-gradient(-75deg, #B69DF8 20%, #4F378B 40%, #4F378B 60%, #B69DF8 80%)
+    background-size: 200% auto
+    -webkit-background-clip: text
+    -webkit-text-fill-color: transparent
+    background-clip: text
+    text-fill-color: transparent
+
+    animation: shine 2s linear infinite
+
+    @keyframes shine
+        to
+            background-position: 200% center
