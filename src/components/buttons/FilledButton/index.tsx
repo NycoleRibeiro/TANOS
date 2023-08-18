@@ -8,6 +8,12 @@ interface ButtonProps {
 
 export const FilledButton: React.FC<ButtonProps> = ({ text, onClick }) => {
   return (
-    <button onClick={onClick}>{text}</button>
+    <button 
+    className="filled-button"
+    type={onClick ? 'button' : 'submit'}
+    onClick={onClick}
+    >
+      {text}
+    </button>
   );
 };
