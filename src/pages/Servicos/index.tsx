@@ -3,12 +3,12 @@ import './style.sass'
 import { Sidebar } from '../../components/sidebar'
 
 
-export const Home = () => {
+export const Servicos = () => {
   return (
-    <div className="dashboard-container">
-      <Sidebar activePage="Home" />
+    <div className="servicos-container">
+      <Sidebar activePage="Servicos" />
       <div className="content">
-        <h1>Dashboard</h1>
+        <h1>Serviços</h1>
       </div>
     </div>
   )
