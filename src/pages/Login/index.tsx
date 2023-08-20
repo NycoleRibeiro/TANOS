@@ -82,7 +82,7 @@ export const Login = () => {
   }
 
   return (
-    <div className="container">
+    <div className="login-container">
       <form className="form" onSubmit={handleLogin}>
         <h1 className="logo">TANOS</h1>
 
