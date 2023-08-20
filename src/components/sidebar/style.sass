@@ -1,0 +1,66 @@
+@use '../../variables' as v
+    
+.sidebar-container
+    display: flex
+    flex-direction: column
+    height: 100vh
+    background: v.$n-10
+    border-right: 1px solid v.$n-20
+    padding: 16px 0
+
+    .menu
+        display: flex
+        align-items: center
+        margin-left: 3px
+        margin-right: 3px
+        position: relative
+        transition: background-color 0.3s, left 0.3s
+
+        &:hover
+            background-color: v.$n-20
+            border-radius: 5px
+            cursor: pointer
+
+        &:hover .page-name
+            opacity: 1
+
+    .icon
+        display: flex
+        align-items: center
+        justify-content: center
+        padding: 12px
+
+        img
+            width: 24px
+            height: 24px
+            filter: invert(47%) sepia(8%) saturate(374%) hue-rotate(227deg) brightness(95%) contrast(87%)
+            
+
+    .bottom
+        margin-top: 60vh
+
+    .page-name
+        height: 48px
+        position: absolute
+        display: flex
+        align-items: center
+        margin-left: 45px
+        padding: 0 16px
+        opacity: 0
+
+        background-color: v.$n-20
+        border-radius: 0 5px 5px 0
+        transition: opacity 0.3s, left 0.3s
+        
+        color: v.$n-95
+        font-weight: 400
+        font-size: 13.33px
+
+    .menu-active
+        display: flex
+        align-items: center
+        border-left: 3px solid v.$p-60
+        margin-right: 3px
+
+        img
+            filter: invert(60%) sepia(52%) saturate(579%) hue-rotate(210deg) brightness(103%) contrast(94%) !important
