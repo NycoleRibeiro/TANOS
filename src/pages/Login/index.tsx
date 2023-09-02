@@ -93,7 +93,7 @@ export const Login = () => {
         {passwordError != '' && <p className="error">{passwordError}</p>}
         
         <div className="button">
-          <FilledButton text="ENTRAR" />
+          <FilledButton text="ENTRAR" size="100%"/>
         </div>
       </form>
     </div>
