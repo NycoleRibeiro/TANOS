@@ -1,0 +1,73 @@
+@use '../../../variables' as v
+
+.avatar-input-content
+    display: flex
+    align-items: center
+    position: relative
+
+    .photo-area
+        width: 110px
+        height: 110px
+        background-color: v.$p-80
+        border-radius: 50%
+        display: flex
+        align-items: center
+        justify-content: center
+        overflow: hidden
+
+        .load-icon
+            width: 40%
+            height: 40%
+            animation: spin 2s linear infinite
+            filter: invert(100%)
+
+        .error
+            display: flex
+            align-items: center
+            justify-content: center
+            width: 100%
+            height: 100%
+            background-color: v.$n-100
+            border: 2px solid v.$e-40
+            border-radius: 50%
+            color: v.$e-40
+            text-align: center
+            font-size: 14px
+            font-weight: 600
+
+        .user-photo
+            width: 100%
+            height: 100%
+            object-fit: cover
+
+        .user-icon
+            width: 50%
+            height: 50%
+            filter: invert(100%)
+
+    .button
+        display: flex
+        align-items: center
+        justify-content: center
+        background-color: v.$p-50
+        width: 32px
+        height: 32px
+        border-radius: 50%
+        cursor: pointer
+        position: absolute
+        bottom: 0
+        right: 0
+
+        input[type="file"]
+            display: none
+
+        img
+            filter: invert(100%)
+            width: 50%
+
+
+@keyframes spin
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
