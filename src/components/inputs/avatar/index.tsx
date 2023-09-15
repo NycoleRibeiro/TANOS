@@ -50,13 +50,14 @@ export const AvatarInput: React.FC<AvatarInputProps> = ({ defaultPhoto }) => {
             {!photo && !isLoading && !error && <img className="user-icon" src={ProfileIcon} alt="" />}
         </div>
         <label className="button">
-            <input type="file" accept="image/*" onChange={handleInputChange} />
-            {editing ? 
-                <img src={EditIcon} alt="" />
-            : 
-                <img src={PlusIcon} alt="" />  
-            }
+          <input type="file" accept="image/*" onChange={handleInputChange} name="foto" />
+          {editing ? 
+            <img src={EditIcon} alt="" />
+          : 
+            <img src={PlusIcon} alt="" />  
+          }
         </label>
+
         </div>
     );
 };
