@@ -7,6 +7,7 @@
     display: flex
     align-items: flex-start
     justify-content: flex-start
+    overflow: hidden
 
     .content
         display: flex
@@ -16,3 +17,165 @@
         width: 100%
         height: 100%
         color: #fff
+
+        .actions
+            display: flex
+            align-items: center
+            gap: 16px
+            width: 100%
+            padding: 0 24px
+            padding-bottom: 16px
+
+        .add-contact
+            position: fixed
+            display: flex
+            align-items: center
+            justify-content: center
+            width: 100%
+            height: 100%
+            background: #00000070
+            backdrop-filter: blur(2.5px)
+
+
+            .modal
+                width: 500px
+                background: v.$n-10
+                display: flex
+                flex-direction: column
+                align-items: center
+                justify-content: center
+                border-radius: 10px
+                box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.50)
+
+                .header
+                    display: flex
+                    width: 100%
+                    height: 48px
+                    margin-bottom: 16px
+                    justify-content: center
+                    align-items: center
+                    font-size: 16px
+                    border-bottom: 1px solid v.$n-20
+
+                .content
+                    width: 100%
+                    padding: 0 24px
+                    gap: 8px
+                    display: flex
+                    align-items: center
+                    justify-content: center
+
+                    .socialmedia
+                        display: flex
+                        align-items: flex-end
+                        justify-content: center
+                        width: 100%
+                        gap: 8px
+
+                        p
+                            width: 120px
+                            height: 48px
+                            text-align: center
+                            font-size: 14px
+                            font-weight: 600
+
+                            display: flex
+                            align-items: center
+                            justify-content: center
+                            border-radius: 5px
+                            background: v.$s-20
+
+                .buttons
+                    display: flex
+                    justify-content: flex-end
+                    width: 100%
+                    gap: 10px
+                    padding: 16px 24px
+                    border-top: 1px solid v.$n-20
+                    margin-top: 16px
+        
+        .clients
+            padding: 24px
+            width: 100%
+            overflow-y: scroll
+
+            .client
+                background: v.$s-20
+                display: flex
+                padding: 16px 24px
+                align-items: center
+                gap: 16px
+                border-radius: 10px
+                margin-bottom: 3px
+                transition: all 0.3s
+
+                &:hover
+                    background: v.$s-30
+                    cursor: pointer
+
+                .avatar
+                    min-width: 40px
+                    height: 40px
+                    border-radius: 10px
+                    background: lightgray 50%
+                
+                .name
+                    color: #FFF
+                    font-size: 16px
+                    font-weight: 600
+                    width: 100%
+
+                .projects
+                    display: flex
+                    gap: 16px
+                    padding: 0px 40px
+                    min-width: 620px
+
+                    .project
+                        display: flex
+                        gap: 8px
+                        justify-content: center
+                        align-items: center
+
+                        .number
+                            display: flex
+                            min-width: 24px
+                            height: 24px
+                            justify-content: center
+                            align-items: center
+                            border-radius: 5px
+                            background: #F6F6F6
+                            color: #000
+                            font-weight: 600
+
+                        p
+                            font-weight: 400
+                            font-size: 13.33px
+                    
+                .buttons
+                    display: flex
+                    gap: 16px
+
+                    .button-social
+                        display: flex
+                        justify-content: center
+                        align-items: center
+                        width: 32px
+                        height: 32px
+                        border-radius: 5px
+                        background: v.$p-30
+
+                        &:hover
+                            background: v.$p-40
+
+                    .button-contact
+                        display: flex
+                        justify-content: center
+                        align-items: center
+                        width: 32px
+                        height: 32px
+                        border-radius: 5px
+                        background: #26292E
+
+                        &:hover
+                            background: lighten(#26292E, 20)
