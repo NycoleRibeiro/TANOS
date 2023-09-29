@@ -1,13 +1,14 @@
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from "react-router-dom"
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './AuthContext';
 
-import { MainRoutes } from './routes'
-import './style.sass'
-
+import { MainRoutes } from './routes';
+import './style.sass';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
-    <MainRoutes/>
+    <AuthProvider>
+      <MainRoutes />
+    </AuthProvider>
   </BrowserRouter>
-  
-)
+);

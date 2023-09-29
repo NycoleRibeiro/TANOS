@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import { auth } from '../firebaseConfig'
 import { Routes, Route } from "react-router-dom";
+import { useAuth } from './AuthContext';
 
 import { LoadingPage } from "./pages/LoadingPage"
 import { Login } from './pages/Login'
@@ -12,31 +11,33 @@ import { Gastos } from './pages/Gastos'
 import { Relatorios } from './pages/Relatorios'
 
 export function MainRoutes() {
+  const auth = useAuth();
 
-    const [logged, setLogged] = useState(false)
-    const [loading, setLoading] = useState(true)
+  if (!auth) {
+    // O contexto de autenticação ainda não foi carregado (pode ser útil para exibir um loader, se necessário)
+    return <LoadingPage />;
+  }
 
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-          setLogged(true)
-          setLoading(false)
-        } else {
-          setLogged(false)
-          setLoading(false)
-        }
-    })
-
+  if (!auth.loggedUser) {
+    // Se o usuário não estiver logado, redirecione para a página de login
     return (
-        <Routes>
-            {loading && <Route path="/" element={<LoadingPage/>} />}
-            {!logged && <Route path="/" element={<Login/>} />}
-            {logged && <Route path="/*" element={<Home/>} />}
-            {logged && <Route path="/projetos" element={<Projetos/>} />}
-            {logged && <Route path="/clientes" element={<Clientes/>} />}
-            {logged && <Route path="/servicos" element={<Servicos/>} />}
-            {logged && <Route path="/gastos" element={<Gastos/>} />}
-            {logged && <Route path="/relatorios" element={<Relatorios/>} />}
-            <Route path="*" element={<h1>Página não encontrada</h1>} />
-        </Routes>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="*" element={<h1>Página não encontrada</h1>} />
+      </Routes>
     )
+  }
+
+  // Se o usuário estiver logado, exiba as rotas autenticadas
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/projetos" element={<Projetos />} />
+      <Route path="/clientes" element={<Clientes />} />
+      <Route path="/servicos" element={<Servicos />} />
+      <Route path="/gastos" element={<Gastos />} />
+      <Route path="/relatorios" element={<Relatorios />} />
+      <Route path="*" element={<h1>Página não encontrada</h1>} />
+    </Routes>
+  );
 }

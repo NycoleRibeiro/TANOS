@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../../../firebaseConfig'
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../../AuthContext';
 
 import './style.sass';
 
 import { LineInput } from '../../components/inputs/lineInput';
 import { FilledButton } from '../../components/buttons/filledButton';
-
-
 
 export const Login = () => {
 
@@ -18,23 +15,33 @@ export const Login = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const [users, setUsers] = useState('');
-  useEffect(() => {
-    getUsers();
-  }, []);
-  console.log(users);
+  const auth = useAuth();
+  const navigate = useNavigate()
 
-  function getUsers() {
-    fetch('http://localhost:3001')
-      .then(response => {
-        return response.text();
-      })
-      .then(data => {
-        setUsers(data);
-      });
+  interface User {
+    userid: number;
+    nome: string;
+    email: string;
+    senha: string;
   }
 
-  const navigate = useNavigate()
+  async function getUserByEmail(email: string): Promise<User | null> {
+    const encodedEmail = encodeURIComponent(email);
+  
+    try {
+      const response = await fetch(`http://localhost:3001/login?email=${encodedEmail}`);
+      const data = await response.json();
+      if (data && data.length > 0) {
+        return data[0];
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error("Erro ao buscar usuário por email:", error);
+      return null; // Retorne null em caso de erro
+    }
+  }
+  
 
   const handleEmail = (email: string) => {
     setEmail(email);
@@ -44,66 +51,16 @@ export const Login = () => {
     setPassword(password);
   }
 
-  // const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-
-  //   let emailValid = false;
-  //   let passwordValid = false;
-  //   // Validação de email
-  //   if (email === '') {
-  //     setEmailError("Por favor, digite um email válido.");
-  //   } else {
-  //     const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-  //     emailValid = regexEmail.test(email);
-  //     setEmailError(!emailValid ? 'Por favor, digite um email válido.' : '');
-  //   }
-  //   // Validação de senha
-  //   if (password === '') {
-  //     setPasswordError("Sua senha deve conter pelo menos 6 dígitos, uma letra e um número.");
-  //   } else {
-  //     const regexPassword = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/;
-  //     passwordValid = regexPassword.test(password);
-  //     setPasswordError(!passwordValid ? "Sua senha deve conter pelo menos 6 dígitos, uma letra e um número." : "");
-  //   }
-
-  //   if (emailValid && passwordValid) {
-  //     console.log(email);
-  //     console.log(password);
-
-  //     signInWithEmailAndPassword(auth, email, password)
-  //       // Se o login for bem sucedido, redireciona para a página inicial
-  //       .then((userCredential) => {
-  //         console.log(userCredential)
-  //         navigate('/', { replace: true });
-  //       }) 
-  //       // Se o login falhar, exibe o erro no console e exibe uma mensagem de erro para o usuário
-  //       .catch((error) => {
-  //         console.log(error.message)
-  //         // Caso o email não esteja cadastrado
-  //         if (error.message.includes("user-not-found")) {
-  //           setEmailError("Este email não está cadastrado em nosso sistema.")
-  //         } else {
-  //           setEmailError("")
-  //         }
-  //         // Caso a senha esteja incorreta
-  //         if (error.message.includes("wrong-password")){
-  //           setPasswordError("Senha incorreta")
-  //         } 
-  //         // Em caso de muitas tentativas de login
-  //         else if (error.message.includes("too-many-requests")) {
-  //           setPasswordError("Limite de tentativas atingido. Crie uma nova senha ou tente novamente mais tarde.")
-  //         } else {
-  //           setPasswordError("")
-  //         }
-  //       })
-  //   }
-  // }
-
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Limpar os erros antes de fazer novas validações
+    setEmailError('');
+    setPasswordError('');
   
     let emailValid = false;
     let passwordValid = false;
+
     // Validação de email
     if (email === '') {
       setEmailError("Por favor, digite um email válido.");
@@ -121,35 +78,25 @@ export const Login = () => {
       setPasswordError(!passwordValid ? "Sua senha deve conter pelo menos 6 dígitos, uma letra e um número." : "");
     }
   
-    if (emailValid && passwordValid) {
+    if (emailValid && passwordValid && auth) {
       try {
-        const requestBody = {
-          email: email, 
-          senha: password, 
-        };
-  
-        const response = await fetch('http://localhost:3001/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
-        });
-  
-        if (response.ok) {
-          // Login bem-sucedido, você pode redirecionar o usuário ou realizar outras ações necessárias
-          const data = await response.json();
-          console.log(data.message); // Mensagem de sucesso do servidor
+        const userData = await getUserByEmail(email);
+        if (userData) {
+          if (password === userData.senha) {
+            auth.login(userData)
+            navigate('/', { replace: true });
+          } else {
+            setPasswordError("Senha incorreta");
+          }
         } else {
-          // Exiba uma mensagem de erro para o usuário
-          const data = await response.json();
-          console.log(data.error); // A mensagem de erro do servidor
-          console.log(data)
+          setEmailError("Email não cadastrado no sistema");
         }
       } catch (error) {
-        console.error(error);
+        console.error("Erro ao buscar usuário por email:", error);
+        // Tratar erros de rede ou outros erros aqui
       }
     }
+
   }
   
 
