@@ -1,3 +1,5 @@
+CREATE DATABASE IF NOT EXISTS tanos;
+
 -- Criação das tabelas
 
 CREATE TABLE users (
