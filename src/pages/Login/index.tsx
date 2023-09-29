@@ -93,7 +93,6 @@ export const Login = () => {
         }
       } catch (error) {
         console.error("Erro ao buscar usuário por email:", error);
-        // Tratar erros de rede ou outros erros aqui
       }
     }
 
