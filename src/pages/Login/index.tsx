@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { listaDeUsuarios } from '../../database/Users'
-import { setUserData, getUserData } from '../../loggedUser'
+import { setUserData } from '../../loggedUser'
 import './style.sass'
 
 import { FilledButton } from '../../components/buttons/filledButton'
