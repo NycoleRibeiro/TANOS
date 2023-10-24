@@ -2,6 +2,7 @@ import './style.sass'
 
 import { Sidebar } from '../../components/sidebar'
 
+import { getUserData } from '../../loggedUser'
 
 export const Gastos = () => {
   return (
