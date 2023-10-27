@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useState } from 'react'
 
 import './style.sass'
 
+import deleteIcon from '../../assets/images/delete.svg'
 import { FilledButton } from '../../components/buttons/filledButton'
 import { Header } from '../../components/header'
 import { AvatarInput } from '../../components/inputs/avatar'
@@ -39,6 +40,7 @@ export const Clientes = () => {
 
   const user = getUserData() // Obtém o usuário atual
   const [isModalOpen, setIsModalOpen] = useState(false)
+
   const [formData, setFormData] = useState({
     nome: '',
     instagram: '',
@@ -128,6 +130,16 @@ export const Clientes = () => {
     })
   }
 
+  const deleteClient = () => {
+    if (user) {
+      removeClient(user.userId, formData.clientId)
+      // Atualize manualmente o estado da lista de clientes
+      const updatedClients = getClients(user.userId)
+      setClients(updatedClients)
+      setIsModalOpen(false)
+    }
+  }
+
   const copyTextToClipboard = (text: string) => {
     const textArea = document.createElement('textarea')
     textArea.value = text
@@ -199,31 +211,54 @@ export const Clientes = () => {
                 </div> */}
 
                 <div className="buttons">
-                  <div
-                    className="button-social"
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      window.open(client.instagram, '_blank')
-                    }}
-                  >
-                    <img src={instaIcon} alt="" />
-                  </div>
-                  <div className="button-social">
-                    <img src={faceIcon} alt="" />
-                  </div>
-                  <div className="button-social">
-                    <img src={siteIcon} alt="" />
-                  </div>
-                  <div className="button-social">
-                    <img
-                      src={linkedinIcon}
-                      alt=""
+                  {client.instagram !== '' && (
+                    <div
+                      className="button-social"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        window.open(client.instagram, '_blank')
+                      }}
+                    >
+                      <img src={instaIcon} alt="" />
+                    </div>
+                  )}
+
+                  {client.facebook !== '' && (
+                    <div
+                      className="button-social"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        window.open(client.facebook, '_blank')
+                      }}
+                    >
+                      <img src={faceIcon} alt="" />
+                    </div>
+                  )}
+
+                  {client.site !== '' && (
+                    <div
+                      className="button-social"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        window.open(client.site, '_blank')
+                      }}
+                    >
+                      <img src={siteIcon} alt="" />
+                    </div>
+                  )}
+
+                  {client.linkedin !== '' && (
+                    <div
+                      className="button-social"
                       onClick={(event) => {
                         event.stopPropagation()
                         window.open(client.linkedin, '_blank')
                       }}
-                    />
-                  </div>
+                    >
+                      <img src={linkedinIcon} alt="" />
+                    </div>
+                  )}
+
                   <div
                     className="button-contact"
                     onClick={(event) => {
@@ -256,13 +291,21 @@ export const Clientes = () => {
 
               <div className="content">
                 {/* <AvatarInput /> */}
-                <Input
-                  label="Nome"
-                  placeholder="Nome do cliente"
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleInputChange}
-                />
+                <div className="line">
+                  <Input
+                    label="Nome"
+                    placeholder="Nome do cliente"
+                    name="nome"
+                    value={formData.nome}
+                    onChange={handleInputChange}
+                  />
+
+                  {formData.clientId !== 0 && (
+                    <div className="delButton" onClick={deleteClient}>
+                      <img src={deleteIcon} alt="" />
+                    </div>
+                  )}
+                </div>
                 <Input
                   label="Email"
                   placeholder="Email do cliente"
