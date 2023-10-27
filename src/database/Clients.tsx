@@ -145,11 +145,13 @@ export const getClients = (userId: number) => {
   // retorna uma lista com todos clientes de um usuário
   for (const user of listaDeClientes) {
     if (user.userId === userId) {
-      return user.clients
+      const sortedClients = user.clients.slice() // Cria uma cópia da lista de clientes
+      sortedClients.sort((a, b) => a.nome.localeCompare(b.nome))
+      return sortedClients
     }
   }
   console.log(`'UserId não encontrado'`)
-  return null
+  return []
 }
 
 export const insertClient = (userId: number, client: Client) => {
@@ -180,15 +182,11 @@ export const removeClient = (userId: number, clientId: number) => {
   return null
 }
 
-export const updateClient = (
-  userId: number,
-  clientId: number,
-  client: Client,
-) => {
+export const updateClient = (userId: number, client: Client) => {
   for (const user of listaDeClientes) {
     if (user.userId === userId) {
       for (const index in user.clients) {
-        if (user.clients[index].clientId === clientId) {
+        if (user.clients[index].clientId === client.clientId) {
           user.clients[Number(index)] = client
           return 'success'
         }

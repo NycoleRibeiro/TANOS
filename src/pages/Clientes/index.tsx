@@ -10,7 +10,12 @@ import { SearchInput } from '../../components/inputs/search'
 import { Sidebar } from '../../components/sidebar'
 import { ToastNotification } from '../../components/toast-notification'
 
-import { listaDeClientes } from '../../database/Clients'
+import {
+  getClients,
+  insertClient,
+  removeClient,
+  updateClient,
+} from '../../database/Clients'
 import { getUserData } from '../../loggedUser'
 
 import emailIcon from '../../assets/images/email.svg'
@@ -21,24 +26,31 @@ import phoneIcon from '../../assets/images/phone.svg'
 import siteIcon from '../../assets/images/site.svg'
 
 export const Clientes = () => {
+  interface Client {
+    nome: string
+    instagram: string
+    facebook: string
+    site: string
+    linkedin: string
+    email: string
+    telefone: string
+    clientId: number
+  }
+
+  const user = getUserData() // Obtém o usuário atual
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formData, setFormData] = useState({
     nome: '',
-    email: '',
-    telefone: '',
     instagram: '',
     facebook: '',
-    linkedin: '',
     site: '',
+    linkedin: '',
+    email: '',
+    telefone: '',
+    clientId: 0,
   })
   const [showToast, setShowToast] = useState(false)
-  const [clientes, setClientes] = useState([])
-
-  const loadClientes = async () => {}
-
-  useEffect(() => {
-    loadClientes()
-  }, [])
+  const [clients, setClients] = useState(user ? getClients(user.userId) : [])
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -48,42 +60,57 @@ export const Clientes = () => {
     })
   }
 
-  const handleSave = async () => {
+  const handleSave = () => {
     // Verifica se todos os campos obrigatórios estão preenchidos
     if (formData.nome && formData.email && formData.telefone) {
-      try {
-        const user = getUserData() // Obtém o usuário atual
+      if (user) {
+        if (formData.clientId === 0) {
+          // Cria um novo cliente
+          const newClientId = getNextClientId(clients)
 
-        if (user) {
-          // O usuário está autenticado, podemos acessar seu UID
-          const newClientRef = await addDoc(collection(db, 'clientes'), {
-            nome: formData.nome,
-            email: formData.email,
-            telefone: formData.telefone,
-            instagram: formData.instagram || '',
-            facebook: formData.facebook || '',
-            linkedin: formData.linkedin || '',
-            site: formData.site || '',
-            userId: user.uid, // Usamos o UID do usuário autenticado
-          })
+          // Define o novo clientId seguindo formData
+          const newClient = { ...formData, clientId: newClientId }
 
-          console.log('Novo cliente adicionado com ID: ', newClientRef.id)
-
-          // Faça algo com os valores em formData
+          // Adiciona o novo cliente
+          insertClient(user.userId, newClient)
+          console.log('Novo cliente adicionado com sucesso: ', newClient)
           setIsModalOpen(false)
+
+          // Atualize manualmente o estado da lista de clientes
+          const updatedClients = getClients(user.userId)
+          setClients(updatedClients)
         } else {
-          // O usuário não está autenticado, faça algo apropriado aqui
-          console.error('Usuário não autenticado.')
+          // Atualiza um cliente
+          updateClient(user.userId, formData)
+          console.log('Cliente atualizado com sucesso: ', formData)
+          setIsModalOpen(false)
+
+          // Atualize manualmente o estado da lista de clientes
+          const updatedClients = getClients(user.userId)
+          setClients(updatedClients)
         }
-      } catch (error) {
-        console.error('Erro ao adicionar cliente: ', error)
+      } else {
+        // O usuário não está autenticado, faça algo apropriado aqui
+        console.error('Usuário não autenticado.')
       }
     }
   }
 
-  const editClient = (client, event) => {
+  const getNextClientId = (clients: Client[]) => {
+    // Encontre o próximo clientId disponível
+    let maxClientId = 0
+    for (const client of clients) {
+      if (client.clientId > maxClientId) {
+        maxClientId = client.clientId
+      }
+    }
+    return maxClientId + 1
+  }
+
+  const editClient = (client: Client, event) => {
     event.stopPropagation()
     setIsModalOpen(true)
+    console.log(client)
     setFormData(client)
   }
 
@@ -91,16 +118,17 @@ export const Clientes = () => {
     setIsModalOpen(true)
     setFormData({
       nome: '',
-      email: '',
-      telefone: '',
       instagram: '',
       facebook: '',
-      linkedin: '',
       site: '',
+      linkedin: '',
+      email: '',
+      telefone: '',
+      clientId: 0,
     })
   }
 
-  const copyTextToClipboard = (text) => {
+  const copyTextToClipboard = (text: string) => {
     const textArea = document.createElement('textarea')
     textArea.value = text
     document.body.appendChild(textArea)
@@ -109,7 +137,7 @@ export const Clientes = () => {
     document.body.removeChild(textArea)
   }
 
-  const handleContactClick = (text) => {
+  const handleContactClick = (text: string) => {
     copyTextToClipboard(text)
     setShowToast(true)
     setTimeout(() => {
@@ -123,7 +151,7 @@ export const Clientes = () => {
       {showToast && (
         <ToastNotification
           type="ok"
-          text="Email copiado para área de transferência"
+          text="Valor copiado para área de transferência"
         />
       )}
 
@@ -139,20 +167,23 @@ export const Clientes = () => {
         </div>
 
         <div className="clients">
-          {clientes.map((client, id) => {
+          {clients.map((client) => {
             return (
               <div
                 className="client"
-                key={id}
+                key={client.clientId}
                 onClick={(e) => editClient(client, e)}
               >
                 <div className="avatar">
-                  <img src="" alt="" />
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/1053/1053244.png"
+                    alt=""
+                  />
                 </div>
 
                 <div className="name">{client.nome}</div>
 
-                <div className="projects">
+                {/* <div className="projects">
                   <div className="project">
                     <div className="number">{client.projetosPendentes}</div>
                     <p>Projetos pendentes</p>
@@ -165,7 +196,7 @@ export const Clientes = () => {
                     <div className="number">{client.projetosConcluidos}</div>
                     <p>Projetos concluídos</p>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="buttons">
                   <div
@@ -224,7 +255,7 @@ export const Clientes = () => {
               <div className="header">Dados do cliente</div>
 
               <div className="content">
-                <AvatarInput />
+                {/* <AvatarInput /> */}
                 <Input
                   label="Nome"
                   placeholder="Nome do cliente"
