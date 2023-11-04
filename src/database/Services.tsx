@@ -1,0 +1,242 @@
+interface Service {
+  nome: string
+  descricao: string
+  categoria: string
+  valor: number
+  valorFixo: boolean
+  serviceId: number
+}
+
+const listaDeServicos = [
+  {
+    userId: 1,
+    services: [
+      {
+        nome: 'Capa para Facebook',
+        descricao: 'Criação do design de uma capa para o Facebook',
+        categoria: 'Design Gráfico',
+        valor: 40.0,
+        valorFixo: true,
+        serviceId: 1,
+      },
+      {
+        nome: 'Logo Design',
+        descricao: 'Design de logotipo profissional',
+        categoria: 'Design Gráfico',
+        valor: 60.0,
+        valorFixo: true,
+        serviceId: 2,
+      },
+      {
+        nome: 'UI/UX Consultoria',
+        descricao: 'Consultoria para melhorar a experiência do usuário',
+        categoria: 'UI/UX Design',
+        valor: 30.0,
+        valorFixo: false,
+        serviceId: 3,
+      },
+      {
+        nome: 'Cartão de Visita',
+        descricao: 'Design de cartão de visita personalizado',
+        categoria: 'Design Gráfico',
+        valor: 25.0,
+        valorFixo: true,
+        serviceId: 4,
+      },
+      {
+        nome: 'Ilustração Digital',
+        descricao: 'Ilustrações digitais personalizadas',
+        categoria: 'Design Gráfico',
+        valor: 50.0,
+        valorFixo: true,
+        serviceId: 5,
+      },
+      {
+        nome: 'Web Design',
+        descricao: 'Design de interfaces de websites',
+        categoria: 'UI/UX Design',
+        valor: 80.0,
+        valorFixo: false,
+        serviceId: 6,
+      },
+      {
+        nome: 'Banner Publicitário',
+        descricao: 'Criação de banners publicitários',
+        categoria: 'Design Gráfico',
+        valor: 35.0,
+        valorFixo: true,
+        serviceId: 7,
+      },
+      {
+        nome: 'Prototipagem de Aplicativos',
+        descricao: 'Criação de protótipos interativos de aplicativos',
+        categoria: 'UI/UX Design',
+        valor: 45.0,
+        valorFixo: false,
+        serviceId: 8,
+      },
+      {
+        nome: 'Identidade Visual Completa',
+        descricao: 'Design de identidade visual completa para empresas',
+        categoria: 'Design Gráfico',
+        valor: 150.0,
+        valorFixo: true,
+        serviceId: 9,
+      },
+      {
+        nome: 'Redesign de Website',
+        descricao: 'Redesenho de sites existentes',
+        categoria: 'UI/UX Design',
+        valor: 70.0,
+        valorFixo: false,
+        serviceId: 10,
+      },
+    ],
+  },
+  {
+    userId: 2,
+    services: [
+      {
+        nome: 'Desenvolvimento de Website',
+        descricao: 'Criação de sites personalizados',
+        categoria: 'Programação',
+        valor: 200.0,
+        valorFixo: false,
+        serviceId: 1,
+      },
+      {
+        nome: 'Desenvolvimento de Aplicativos Móveis',
+        descricao: 'Criação de aplicativos para iOS e Android',
+        categoria: 'Programação',
+        valor: 250.0,
+        valorFixo: false,
+        serviceId: 2,
+      },
+      {
+        nome: 'Manutenção de Websites',
+        descricao: 'Manutenção e atualização de sites existentes',
+        categoria: 'Programação',
+        valor: 80.0,
+        valorFixo: true,
+        serviceId: 3,
+      },
+      {
+        nome: 'E-commerce Personalizado',
+        descricao: 'Desenvolvimento de lojas online personalizadas',
+        categoria: 'Programação',
+        valor: 300.0,
+        valorFixo: false,
+        serviceId: 4,
+      },
+      {
+        nome: 'API Integration',
+        descricao: 'Integração de APIs de terceiros em aplicativos',
+        categoria: 'Programação',
+        valor: 120.0,
+        valorFixo: true,
+        serviceId: 5,
+      },
+      {
+        nome: 'Sistema de Gerenciamento de Conteúdo',
+        descricao: 'Criação de sistemas CMS personalizados',
+        categoria: 'Programação',
+        valor: 150.0,
+        valorFixo: false,
+        serviceId: 6,
+      },
+      {
+        nome: 'Desenvolvimento de Plugins',
+        descricao: 'Desenvolvimento de plugins personalizados para sites',
+        categoria: 'Programação',
+        valor: 50.0,
+        valorFixo: true,
+        serviceId: 7,
+      },
+      {
+        nome: 'Aplicativo de Gerenciamento Empresarial',
+        descricao: 'Desenvolvimento de aplicativos para empresas',
+        categoria: 'Programação',
+        valor: 180.0,
+        valorFixo: false,
+        serviceId: 8,
+      },
+      {
+        nome: 'Web Scraping',
+        descricao: 'Coleta de dados na web por meio de scraping',
+        categoria: 'Programação',
+        valor: 70.0,
+        valorFixo: true,
+        serviceId: 9,
+      },
+      {
+        nome: 'Hospedagem e Manutenção de Servidores',
+        descricao: 'Serviços de hospedagem e manutenção de servidores',
+        categoria: 'Programação',
+        valor: 100.0,
+        valorFixo: true,
+        serviceId: 10,
+      },
+    ],
+  },
+]
+
+export const getServices = (userId: number, categoria?: string) => {
+  // Retorna uma lista de serviços de um usuário, filtrados por categoria se fornecida
+  for (const user of listaDeServicos) {
+    if (user.userId === userId) {
+      if (categoria) {
+        return user.services.filter(
+          (service) => service.categoria === categoria,
+        )
+      }
+      return user.services
+    }
+  }
+  console.log(`'UserId não encontrado'`)
+  return []
+}
+
+export const insertService = (userId: number, service: Service) => {
+  for (const user of listaDeServicos) {
+    if (user.userId === userId) {
+      user.services.push(service)
+      return 'success'
+    }
+  }
+  console.log(`'UserId não encontrado'`)
+  return null
+}
+
+export const removeService = (userId: number, serviceId: number) => {
+  for (const user of listaDeServicos) {
+    if (user.userId === userId) {
+      for (const index in user.services) {
+        if (user.services[index].serviceId === serviceId) {
+          user.services.splice(Number(index), 1)
+          return 'success'
+        }
+      }
+      console.log(`'ServiceId não encontrado'`)
+      return null
+    }
+  }
+  console.log(`'UserId não encontrado'`)
+  return null
+}
+
+export const updateService = (userId: number, service: Service) => {
+  for (const user of listaDeServicos) {
+    if (user.userId === userId) {
+      for (const index in user.services) {
+        if (user.services[index].serviceId === service.serviceId) {
+          user.services[Number(index)] = service
+          return 'success'
+        }
+      }
+      console.log(`'ServiceId não encontrado'`)
+      return null
+    }
+  }
+  console.log(`'UserId não encontrado'`)
+  return null
+}

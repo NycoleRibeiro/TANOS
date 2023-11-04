@@ -7,12 +7,118 @@
     display: flex
     align-items: flex-start
     justify-content: flex-start
+    overflow: hidden
 
     .content
         display: flex
-        align-items: center
-        justify-content: center
+        flex-direction: column
+        align-items: flex-start
+        justify-content: flex-start
         width: 100%
         height: 100%
-        padding: 0 16px
         color: #fff
+
+        .actions
+            display: flex
+            align-items: center
+            gap: 16px
+            width: 100%
+            padding: 0 24px
+            padding-bottom: 16px
+
+        .add-service
+            position: fixed
+            display: flex
+            align-items: center
+            justify-content: center
+            width: 100%
+            height: 100%
+            background: #00000070
+            backdrop-filter: blur(2.5px)
+
+            .modal
+                width: 500px
+                background: v.$n-10
+                display: flex
+                flex-direction: column
+                align-items: center
+                justify-content: center
+                border-radius: 10px
+                box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.50)
+
+                .header
+                    display: flex
+                    width: 100%
+                    height: 48px
+                    margin-bottom: 16px
+                    justify-content: center
+                    align-items: center
+                    font-size: 16px
+                    border-bottom: 1px solid v.$n-20
+
+                .content
+                    width: 100%
+                    padding: 0 24px
+                    gap: 8px
+                    display: flex
+                    align-items: center
+                    justify-content: center
+
+                    .fixValue
+                        display: flex
+                        align-items: center
+                        width: 100%
+                        gap: 8px
+                        
+
+                .buttons
+                    display: flex
+                    justify-content: flex-end
+                    width: 100%
+                    gap: 10px
+                    padding: 16px 24px
+                    border-top: 1px solid v.$n-20
+                    margin-top: 16px
+
+        .services
+            padding: 24px
+            width: 100%
+            overflow-y: scroll
+
+            .service
+                background: v.$s-20
+                display: flex
+                padding: 16px 24px
+                align-items: center
+                gap: 16px
+                border-radius: 10px
+                margin-bottom: 3px
+                transition: all 0.3s
+
+                &:hover
+                    background: v.$s-30
+                    cursor: pointer
+
+                .name
+                    color: #FFF
+                    font-size: 16px
+                    font-weight: 600
+                    width: 600px
+                
+                .description
+                    color: v.$p-80
+                    font-size: 16px
+                    font-weight: 400
+                    width: 100%
+
+                .category
+                    white-space: nowrap
+                    border: 1px solid #91AFFA
+                    border-radius: 5px
+                    padding: 8px 16px
+                    color: #91AFFA
+                    font-size: 16px
+
+                .value
+                    font-size: 18px
+                    font-weight: 500
