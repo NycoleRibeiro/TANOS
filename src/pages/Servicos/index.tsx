@@ -172,7 +172,11 @@ export const Servicos = () => {
                 <div className="name">{service.nome}</div>
                 <div className="description">{service.descricao}</div>
                 <div className="category">{service.categoria}</div>
-                <div className="value">R${service.valor.toFixed(2)}</div>
+                <div
+                  className={`value ${service.valorFixo ? 'fixed-value' : ''}`}
+                >
+                  R${service.valor.toFixed(2)}
+                </div>
               </div>
             )
           })}
@@ -185,13 +189,20 @@ export const Servicos = () => {
               <div className="header">Dados do serviço</div>
 
               <div className="content">
-                <Input
-                  label="Nome"
-                  placeholder="Nome do serviço"
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleInputChange}
-                />
+                <div className="line">
+                  <Input
+                    label="Nome"
+                    placeholder="Nome do serviço"
+                    name="nome"
+                    value={formData.nome}
+                    onChange={handleInputChange}
+                  />
+                  {formData.serviceId !== 0 && (
+                    <div className="delButton" onClick={deleteService}>
+                      <img src={deleteIcon} alt="" />
+                    </div>
+                  )}
+                </div>
                 <Input
                   label="Descrição"
                   placeholder="Descrição do serviço"
@@ -236,13 +247,6 @@ export const Servicos = () => {
                   onClick={() => setIsModalOpen(false)}
                 />
                 <FilledButton text="Salvar" size="100px" onClick={handleSave} />
-                {formData.serviceId !== 0 && (
-                  <FilledButton
-                    text="Excluir"
-                    size="100px"
-                    onClick={deleteService}
-                  />
-                )}
               </div>
             </div>
           </div>
