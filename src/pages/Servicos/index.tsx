@@ -41,6 +41,17 @@ export const Servicos = () => {
   })
   const [showToast, setShowToast] = useState(false)
   const [services, setServices] = useState(user ? getServices(user.userId) : [])
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term)
+  }
+
+  const filteredAndSortedServices = services
+    .filter((service) =>
+      service.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+    )
+    .sort((a, b) => a.nome.localeCompare(b.nome))
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -153,7 +164,10 @@ export const Servicos = () => {
       <div className="content">
         <Header path={[{ label: 'Serviços', path: '/servicos' }]} />
         <div className="actions">
-          <SearchInput placeholder="Nome do serviço" onClick={() => {}} />
+          <SearchInput
+            placeholder="Nome do serviço"
+            onSearchChange={handleSearchChange}
+          />
           <FilledButton
             text="Adicionar serviço"
             size="200px"
@@ -162,7 +176,7 @@ export const Servicos = () => {
         </div>
 
         <div className="services">
-          {services.map((service) => {
+          {filteredAndSortedServices.map((service) => {
             return (
               <div
                 className="service"

@@ -53,6 +53,15 @@ export const Clientes = () => {
   })
   const [showToast, setShowToast] = useState(false)
   const [clients, setClients] = useState(user ? getClients(user.userId) : [])
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term)
+  }
+
+  const filteredClients = clients.filter((client) =>
+    client.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -170,7 +179,10 @@ export const Clientes = () => {
       <div className="content">
         <Header path={[{ label: 'Clientes', path: '/clientes' }]} />
         <div className="actions">
-          <SearchInput placeholder="Nome do cliente" onClick={() => {}} />
+          <SearchInput
+            placeholder="Nome do cliente"
+            onSearchChange={handleSearchChange}
+          />
           <FilledButton
             text="Adicionar contato"
             size="200px"
@@ -179,7 +191,7 @@ export const Clientes = () => {
         </div>
 
         <div className="clients">
-          {clients.map((client) => {
+          {filteredClients.map((client) => {
             return (
               <div
                 className="client"
