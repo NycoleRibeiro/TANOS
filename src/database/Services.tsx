@@ -185,69 +185,6 @@ const listaDeServicos: UserServices[] = [
   },
 ]
 
-// export const getServices = (userId: number, categoria?: string) => {
-//   // Retorna uma lista de serviços de um usuário, filtrados por categoria se fornecida
-//   for (const user of listaDeServicos) {
-//     if (user.userId === userId) {
-//       if (categoria) {
-//         return user.services.filter(
-//           (service) => service.categoria === categoria,
-//         )
-//       }
-//       return user.services
-//     }
-//   }
-//   console.log(`'UserId não encontrado'`)
-//   return []
-// }
-
-// export const insertService = (userId: number, service: Service) => {
-//   for (const user of listaDeServicos) {
-//     if (user.userId === userId) {
-//       user.services.push(service)
-//       return 'success'
-//     }
-//   }
-//   console.log(`'UserId não encontrado'`)
-//   return null
-// }
-
-// export const removeService = (userId: number, serviceId: number) => {
-//   for (const user of listaDeServicos) {
-//     if (user.userId === userId) {
-//       for (const index in user.services) {
-//         if (user.services[index].serviceId === serviceId) {
-//           user.services.splice(Number(index), 1)
-//           return 'success'
-//         }
-//       }
-//       console.log(`'ServiceId não encontrado'`)
-//       return null
-//     }
-//   }
-//   console.log(`'UserId não encontrado'`)
-//   return null
-// }
-
-// export const updateService = (userId: number, service: Service) => {
-//   for (const user of listaDeServicos) {
-//     if (user.userId === userId) {
-//       for (const index in user.services) {
-//         if (user.services[index].serviceId === service.serviceId) {
-//           user.services[Number(index)] = service
-//           return 'success'
-//         }
-//       }
-//       console.log(`'ServiceId não encontrado'`)
-//       return null
-//     }
-//   }
-//   console.log(`'UserId não encontrado'`)
-//   return null
-// }
-
-// Função auxiliar para encontrar os serviços de um usuário
-
 const findUserServices = (userId: number): Service[] | undefined => {
   const user = listaDeServicos.find((user) => user.userId === userId)
   return user ? user.services : undefined
