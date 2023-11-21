@@ -1,0 +1,98 @@
+@use '../../../variables' as v
+    
+.text-input
+    display: flex
+    flex-direction: column
+    width: 100%
+
+    label.text
+        font-size: 12px
+        color: v.$p-60
+        font-weight: 400
+        position: relative
+        top: 0.5rem
+        margin: 0 0 0 16px
+        padding: 0 3px
+        background: v.$n-20
+        width: fit-content
+
+    .input
+        display: flex
+        align-items: center
+        gap: 8px
+        height: 48px
+        padding: 0px 16px
+
+        border: 2px v.$n-60 solid
+        border-radius: 5px
+        background: v.$n-20
+        transition: all 0.4s
+
+        &.active
+            border: 2px v.$p-60 solid
+            .icon
+                filter: invert(15%) sepia(73%) saturate(4369%) hue-rotate(279deg) brightness(67%) contrast(116%)
+
+
+        .icon
+            filter: invert(83%) sepia(8%) saturate(354%) hue-rotate(199deg) brightness(95%) contrast(84%)
+            transition: all 0.4s
+        
+        .clear-icon
+            filter: invert(83%) sepia(8%) saturate(354%) hue-rotate(199deg) brightness(95%) contrast(84%)
+            width: 20px
+            cursor: pointer
+
+        .input-text
+            border: none
+            width: 100%
+            height: 100%
+            font-size: 0.75rem
+            font-weight: 400
+            font-size: 16px
+            color: #FFF
+            background-color: v.$n-20
+
+            caret-color: v.$p-60
+
+            &::selection
+                background: v.$p-60
+                color: #FFF
+
+            &::-moz-selection
+                background: v.$p-60
+                color: #FFF
+
+            &:focus
+                outline: none
+
+            &::placeholder
+                color: v.$n-60
+                font-size: 14px
+                font-weight: 400
+
+    &.error
+        label.text
+            color: #b70000
+
+        .input
+            border: 2px #b70000 solid
+
+            &.active
+                border: 2px #b70000 solid
+                .icon
+                    filter: invert(12%) sepia(75%) saturate(4969%) hue-rotate(358deg) brightness(93%) contrast(118%)
+
+
+            .icon
+                filter: invert(12%) sepia(75%) saturate(4969%) hue-rotate(358deg) brightness(93%) contrast(118%)
+            
+            .clear-icon
+                filter: invert(12%) sepia(75%) saturate(4969%) hue-rotate(358deg) brightness(93%) contrast(118%)
+
+        .error-text 
+            color: #b70000
+            width: 100%
+            padding-left: 16px
+            padding-top: 5px
+            font-size: 12px

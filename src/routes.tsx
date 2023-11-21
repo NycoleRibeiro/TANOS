@@ -6,6 +6,7 @@ import { Home } from './pages/Home'
 import { LoadingPage } from './pages/LoadingPage'
 import { Login } from './pages/Login'
 import { Projetos } from './pages/Projetos'
+import { Projeto } from './pages/Projeto'
 import { Relatorios } from './pages/Relatorios'
 import { Servicos } from './pages/Servicos'
 
@@ -16,6 +17,7 @@ export function MainRoutes() {
       <Route path="/loading" element={<LoadingPage />} />
       <Route path="/home" element={<Home />} />
       <Route path="/projetos" element={<Projetos />} />
+      <Route path="/projeto/:projectId" element={<Projeto />} />
       <Route path="/clientes" element={<Clientes />} />
       <Route path="/servicos" element={<Servicos />} />
       <Route path="/gastos" element={<Gastos />} />

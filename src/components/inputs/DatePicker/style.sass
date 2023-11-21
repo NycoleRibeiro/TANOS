@@ -1,0 +1,366 @@
+@use '../../../variables' as v
+
+.custom-datepicker
+    display: flex
+    flex-direction: column
+    width: 100%
+
+    label.text
+        font-size: v.$font-xs
+        color: v.$purple1000
+        font-weight: 400
+        position: relative
+        top: 0.5rem
+        margin: 0 0 0 16px
+        padding: 0 3px
+        background: v.$white
+        width: fit-content
+
+    .input
+        display: flex
+        align-items: center
+        gap: 8px
+        height: 48px
+        padding: 0px 16px
+
+        border: 2px v.$neutral-purple300 solid
+        border-radius: 5px
+        background: v.$white
+        transition: all 0.4s
+
+        &.active
+            border: 2px v.$purple1000 solid
+
+        .input-data
+            background: transparent
+            border: none
+            width: 100%
+            height: 48px
+            outline: none
+            font-size: 0.75rem
+            font-weight: 400
+            font-size: 16px
+            color: v.$black
+
+            caret-color: v.$purple1000
+
+            &::selection
+                background: v.$purple1000
+                color: v.$white
+
+            &::-moz-selection
+                background: v.$purple1000
+                color: v.$white
+
+            &::placeholder
+                color: v.$neutral-purple300
+                font-size: v.$font-sm
+                font-weight: 400
+        
+        .clear-icon
+            filter: invert(83%) sepia(8%) saturate(354%) hue-rotate(199deg) brightness(95%) contrast(84%)
+            width: 20px
+            cursor: pointer
+            user-select: none
+
+        .calendar-icon
+            background: v.$gray50
+            border-radius: 50%
+            padding: 8px
+            display: flex
+            align-items: center
+            justify-content: center
+            cursor: pointer
+            transition: 0.3s
+
+            &:hover
+                background: v.$gray100
+
+            img
+                width: 16px
+                filter: invert(16%) sepia(0%) saturate(443%) hue-rotate(299deg) brightness(102%) contrast(90%)
+                
+
+.react-datepicker-wrapper
+    display: inline-block
+    padding: 0
+    border: 0
+    height: 48px
+    width: 100%
+
+.react-datepicker
+    font-family: "Helvetica Neue", helvetica, arial, sans-serif
+    font-size: 0.8rem
+    background-color: v.$neutral-purple100
+    color: v.$gray1000
+    border: none
+    border-radius: 10px
+    display: inline-block
+    position: relative
+    width: 100%
+
+    &--time-only
+        .react-datepicker__triangle
+            left: 35px
+
+        .react-datepicker__time-container
+            border-left: 0
+
+        .react-datepicker__time,
+        .react-datepicker__time-box
+            border-bottom-left-radius: 10px
+            border-bottom-right-radius: 10px
+
+.react-datepicker__triangle
+    display: none
+
+.react-datepicker-popper
+    z-index: 5
+    margin-left: -16px
+
+    &[data-placement^="bottom"]
+        padding-top: 3px
+
+    &[data-placement^="top"]
+        padding-bottom: 3px
+
+    &[data-placement^="right"]
+        padding-left: 3px
+
+    &[data-placement^="left"]
+        padding-right: 3px
+
+.react-datepicker__header
+    text-align: center
+    background-color: v.$neutral-purple100
+    border-bottom: 1px solid v.$neutral-purple200
+    border-top-left-radius: 10px
+    padding: 8px 0
+    position: relative
+    font-weight: 600
+    color: v.$gray1000
+
+    &--time
+        padding-bottom: 8px
+        padding-left: 5px
+        padding-right: 5px
+
+        &:not(&--only)
+            border-top-left-radius: 0
+
+    &:not(&--has-time-select)
+        border-top-right-radius: 10px
+
+
+.react-datepicker__month-read-view, 
+.react-datepicker__year-read-view
+    visibility: visible !important
+    
+.react-datepicker__year-dropdown-container--select,
+.react-datepicker__month-dropdown-container--select,
+.react-datepicker__month-year-dropdown-container--select,
+.react-datepicker__year-dropdown-container--scroll,
+.react-datepicker__month-dropdown-container--scroll,
+.react-datepicker__month-year-dropdown-container--scroll
+    display: inline-block
+    margin: 0 15px
+
+.react-datepicker__current-month,
+.react-datepicker-time__header,
+.react-datepicker-year-header
+    margin-top: 0
+    color: #000
+    font-weight: 600
+    font-size: v.$font-sm
+    text-transform: capitalize
+    display: none
+    
+
+.react-datepicker-time__header
+    text-overflow: ellipsis
+    white-space: nowrap
+    overflow: hidden
+
+.react-datepicker__navigation
+    align-items: center
+    background: none
+    display: flex
+    justify-content: center
+    text-align: center
+    cursor: pointer
+    position: absolute
+    top: 2px
+    padding: 0
+    border: none
+    z-index: 1
+    height: 32px
+    width: 32px
+    text-indent: -999em
+    overflow: hidden
+
+    &--previous
+        left: 2px
+
+    &--next
+        right: 2px
+
+        &--with-time:not(&--with-today-button)
+            right: 85px
+
+    &--years
+        position: relative
+        top: 0
+        display: block
+        margin-left: auto
+        margin-right: auto
+
+        &-previous
+            top: 4px
+            border-left: 16px solid transparent
+            border-right: 16px solid transparent
+            border-top: 10px solid v.$gray1000
+
+        &-upcoming
+            top: -4px
+            border-left: 16px solid transparent
+            border-right: 16px solid transparent
+            border-bottom: 10px solid v.$gray1000
+            
+
+    &:hover
+        *::before
+            border-color: lighten(#ccc, 15%)
+
+.react-datepicker__navigation-icon
+    position: relative
+    top: -1px
+    font-size: 20px
+    width: 0
+
+    &::before
+        border-color: #ccc
+        border-style: solid
+        border-width: 3px 3px 0 0
+        content: ""
+        display: block
+        height: 9px
+        position: absolute
+        top: 6px
+        width: 9px
+        &--disabled,
+        &--disabled:hover
+            border-color: lighten(#ccc, 10%)
+            cursor: default
+
+    &--next
+        left: -2px
+
+        &::before
+            transform: rotate(45deg)
+            left: -7px
+
+    &--previous
+        right: -2px
+
+        &::before
+            transform: rotate(225deg)
+            right: -7px
+
+.react-datepicker__month-container
+    float: left
+
+    .react-datepicker__day
+        transition: all 0.5s
+
+        &:hover
+            background-color: v.$neutral-purple300
+            border-radius: 50%
+
+        &--selected
+            color: v.$white
+            background-color: v.$purple1000
+            border-radius: 50%
+
+        &--keyboard-selected
+            color: v.$white
+            background-color: v.$blue900
+            border-radius: 50%
+
+.react-datepicker__year
+    margin: 0.4rem
+    text-align: center
+
+    &-wrapper
+        display: flex
+        flex-wrap: wrap
+        max-width: 180px
+
+        .react-datepicker__year-text
+            display: inline-block
+            width: 4rem
+            margin: 2px
+
+.react-datepicker__year-dropdown
+    background-color: v.$neutral-purple200
+    border: v.$neutral-purple300
+
+.react-datepicker__year-option    
+    &:hover
+        background-color: v.$neutral-purple300
+
+
+.react-datepicker__month
+    margin: 0.4rem
+    text-align: center
+
+    .react-datepicker__month-text,
+    .react-datepicker__quarter-text
+        display: inline-block
+        width: 4rem
+        margin: 2px
+
+.react-datepicker__month-dropdown
+    padding: 16px
+    background-color: v.$neutral-purple200
+    border: v.$neutral-purple300
+
+.react-datepicker__month-option    
+    text-transform: capitalize
+    text-align: center
+    padding: 3px 0
+
+    &:hover
+        background-color: v.$neutral-purple300
+        border-radius: 5px
+    
+    &--selected_month
+        font-weight: 600
+
+.react-datepicker__input-time-container
+    clear: both
+    width: 100%
+    float: left
+    margin: 5px 0 10px 15px
+    text-align: left
+
+    .react-datepicker-time__caption
+        display: inline-block
+
+    .react-datepicker-time__input-container
+        display: inline-block
+
+        .react-datepicker-time__input
+            display: inline-block
+            margin-left: 10px
+
+        input
+            width: auto
+
+        input[type="time"]::-webkit-inner-spin-button,
+        input[type="time"]::-webkit-outer-spin-button
+            -webkit-appearance: none
+            margin: 0
+
+        input[type="time"]
+            -moz-appearance: textfield
+

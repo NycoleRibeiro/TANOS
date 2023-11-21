@@ -1,0 +1,117 @@
+@use '../../../variables' as v
+    
+.simple-select
+    position: relative
+    display: flex
+    flex-direction: column
+    width: 100%
+
+    label.text
+        font-size: 12px
+        color: v.$p-60
+        font-weight: 400
+        position: relative
+        top: 0.5rem
+        margin: 0 0 0 16px
+        padding: 0 3px
+        background: v.$n-20
+        width: fit-content
+
+    .input
+        display: flex
+        align-items: center
+        gap: 8px
+        height: 48px
+        padding: 0px 16px
+
+        border: 2px v.$n-60 solid
+        border-radius: 5px
+        background: v.$n-20
+        transition: all 0.4s
+
+        &.active
+            border: 2px v.$p-60 solid
+
+
+        .icon
+            display: flex
+            align-items: center
+            justify-content: center
+            min-width: 24px
+            min-height: 24px
+            background: v.$n-30
+            border-radius: 50%
+
+            .arrow-icon
+                width: 16px
+                filter: invert(100%)
+                transition: all 0.4s
+
+
+        .input-text
+            border: none
+            width: 100%
+            height: 100%
+            font-size: 14px
+            font-weight: 400
+            font-size: 16px
+            color: #FFF
+            background-color: v.$n-20
+
+            caret-color: v.$p-60
+
+            &::selection
+                background: v.$p-60
+                color: #FFF
+
+            &::-moz-selection
+                background: v.$p-60
+                color: #FFF
+
+            &:focus
+                outline: none
+
+            &::placeholder
+                color: v.$n-60
+                font-size: 14px
+                font-weight: 400
+
+    .options-container
+        position: absolute
+        display: flex
+        flex-direction: column
+        width: 100%
+        max-height: 200px
+        top: 66px
+        padding: 8px
+
+        overflow-x: hidden
+        overflow-y: scroll
+        z-index: 10
+
+        background: v.$n-10
+        border-radius: 5px
+        box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.10)
+
+        .radio-option
+            display: flex
+            padding: 16px 8px
+            align-items: center
+            gap: 8px
+            border-radius: 4px
+            transition: all 0.2s
+
+            font-size: 14px
+
+            &:hover
+                background: v.$s-20
+                cursor: pointer
+
+            &.selected
+                background: v.$p-50
+                
+                &:hover
+                    background: v.$p-50
+
+            input[type="radio"]
+                appearance: none

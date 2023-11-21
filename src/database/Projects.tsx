@@ -136,6 +136,25 @@ export const getProjects = (userId: number, status?: string): Project[] => {
   return []
 }
 
+export const getProjectById = (
+  userId: number,
+  projectId: number,
+): Project | null => {
+  const userProjects = findUserProjects(userId)
+  if (userProjects) {
+    const project = userProjects.find(
+      (project) => project.projectId === projectId,
+    )
+    if (project) {
+      return project
+    }
+    console.error('ProjectId não encontrado')
+    return null
+  }
+  console.error('UserId não encontrado')
+  return null
+}
+
 export const insertProject = (
   userId: number,
   project: Project,

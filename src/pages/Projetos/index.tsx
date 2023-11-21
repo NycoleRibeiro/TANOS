@@ -4,6 +4,7 @@ import './style.sass'
 import { Header } from '../../components/header'
 import { Sidebar } from '../../components/sidebar'
 
+import { useNavigate } from 'react-router-dom'
 import { getProjects } from '../../database/Projects'
 import { getUserData } from '../../loggedUser'
 
@@ -32,6 +33,8 @@ interface Project {
 }
 
 export const Projetos = () => {
+  const navigate = useNavigate()
+
   const user = getUserData()
   const [naoIniciados, setNaoIniciados] = useState<Project[]>([])
   const [emAndamento, setEmAndamento] = useState<Project[]>([])
@@ -46,7 +49,13 @@ export const Projetos = () => {
   }, [user])
 
   const renderProjectCard = (project: Project) => (
-    <div className="card" key={project.projectId}>
+    <div
+      className="card"
+      key={project.projectId}
+      onClick={() => {
+        navigate(`/projeto/${project.projectId}`)
+      }}
+    >
       <div className="title">{project.titulo}</div>
       <div className="price">
         R${' '}
