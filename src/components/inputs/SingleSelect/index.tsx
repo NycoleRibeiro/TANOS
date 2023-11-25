@@ -22,10 +22,17 @@ export const SingleSelect: React.FC<SingleSelectProps> = ({
   // Estados para controlar o comportamento do componente
   const [focus, setFocus] = useState(false) // Estado para controlar o foco do input, utilizado para questões de estilo
   const [value, setValue] = useState(initialValue) // Estado para controlar o valor do input, utilizado para questões de estilo
+  console.log(value)
+  console.log(initialValue)
   const [selectedItem, setSelectedItem] = useState(initialValue) // Estado para controlar a opção selecionada
   const [isOpen, setIsOpen] = useState(false) // Estado para controlar a abertura do dropdown
   const [filteredOptions, setFilteredOptions] = useState<string[]>(options) // Estado para armazenar opções filtradas
   const singleSelectRef = useRef<HTMLDivElement | null>(null) // Ref para o componente MultiSelect
+
+  useEffect(() => {
+    setValue(initialValue)
+    setSelectedItem(initialValue)
+  }, [initialValue])
 
   // Event listener para fechar o dropdown quando clicar fora do componente
   useEffect(() => {

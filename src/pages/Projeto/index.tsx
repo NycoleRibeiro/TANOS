@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import './style.sass'
 
@@ -15,52 +15,21 @@ import { LargeTextInput } from '../../components/inputs/LargeTextInput'
 import { SingleSelect } from '../../components/inputs/SingleSelect'
 import { TextInput } from '../../components/inputs/TextInput'
 import { Sidebar } from '../../components/sidebar'
+import { ToastNotification } from '../../components/toast-notification'
 
 import { getClientById } from '../../database/Clients'
 import { getProjectById } from '../../database/Projects'
 import { getServicesById } from '../../database/Services'
 import { getUserData } from '../../loggedUser'
 
+import { Client, Project, Service } from '../../database/Types'
+
 export const Projeto = () => {
-  interface Expense {
-    titulo: string
-    tipo: 'Projeto' | 'Cliente'
-    valor: number
-  }
-
-  interface ToDoItem {
-    check: boolean
-    descricao: string
-  }
-
-  interface Project {
-    projectId: number
-    titulo: string
-    descricao: string
-    status: 'Não iniciado' | 'Em andamento' | 'Concluído'
-    dataPedido: string
-    dataEntrega: string
-    clienteId: number
-    servicosId: number[]
-    gastos: Expense[]
-    toDoList: ToDoItem[]
-  }
-
-  interface Client {
-    nome: string
-    instagram: string
-    facebook: string
-    site: string
-    linkedin: string
-    email: string
-    telefone: string
-    clientId: number
-  }
-
   const { projectId } = useParams()
   const projectIdNumber = projectId ? parseInt(projectId, 10) : null
   const user = getUserData()
-  let projeto: Project = {
+
+  const initialProjectState: Project = {
     projectId: 0,
     titulo: '',
     descricao: '',
@@ -73,7 +42,7 @@ export const Projeto = () => {
     toDoList: [],
   }
 
-  let client: Client = {
+  const initialClientState: Client = {
     nome: '',
     instagram: '',
     facebook: '',
@@ -84,32 +53,78 @@ export const Projeto = () => {
     clientId: 0,
   }
 
-  let services = []
+  const [projeto, setProjeto] = useState<Project>(initialProjectState)
+  const [client, setClient] = useState<Client>(initialClientState)
+  const [services, setServices] = useState<Service[]>([])
+  const [gastos, setGastos] = useState(projeto.gastos)
 
-  if (user && projectIdNumber !== null) {
-    const fetchedProject = getProjectById(user.userId, projectIdNumber)
-    if (fetchedProject) {
-      projeto = fetchedProject
-      const fetchedClient = getClientById(user.userId, fetchedProject.clienteId)
-      if (fetchedClient) {
-        client = fetchedClient
-      }
-      const fetchedServices = getServicesById(
-        user.userId,
-        fetchedProject.servicosId,
-      )
-      if (fetchedServices) {
-        services = fetchedServices
+  const [showToast, setShowToast] = useState(false)
+
+  useEffect(() => {
+    if (user && projectIdNumber !== null) {
+      const fetchedProject = getProjectById(user.userId, projectIdNumber)
+      if (fetchedProject) {
+        setProjeto(fetchedProject)
+        setGastos(fetchedProject.gastos)
+        const fetchedClient = getClientById(
+          user.userId,
+          fetchedProject.clienteId,
+        )
+        if (fetchedClient) {
+          setClient(fetchedClient)
+        }
+        const fetchedServices = getServicesById(
+          user.userId,
+          fetchedProject.servicosId,
+        )
+        if (fetchedServices) {
+          setServices(fetchedServices)
+        }
       }
     }
+  }, [user, projectIdNumber])
+
+  const handleStatusChange = (newStatus: string) => {
+    setProjeto({ ...projeto, status: newStatus })
   }
 
-  const handleStatusChange = (newStatus) => {
-    setProjeto({ ...projeto, status: newStatus })
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target
+    setProjeto({ ...projeto, [name]: value })
+  }
+
+  const handleDescriptionChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = event.target
+    setProjeto({ ...projeto, [name]: value })
+  }
+
+  const copyTextToClipboard = (text: string) => {
+    const textArea = document.createElement('textarea')
+    textArea.value = text
+    document.body.appendChild(textArea)
+    textArea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textArea)
+  }
+
+  const handleContactClick = (text: string) => {
+    copyTextToClipboard(text)
+    setShowToast(true)
+    setTimeout(() => {
+      setShowToast(false)
+    }, 5000) // 5 segundos
   }
 
   return (
     <div className="projeto-container">
+      {showToast && (
+        <ToastNotification
+          type="ok"
+          text="Valor copiado para área de transferência"
+        />
+      )}
       <Sidebar activePage="Projetos" />
       <div className="content">
         <Header
@@ -125,7 +140,7 @@ export const Projeto = () => {
               placeholder="Digite um título"
               name="titulo"
               inputValue={projeto.titulo}
-              onChange={() => {}}
+              onChange={handleInputChange}
             />
             <SingleSelect
               onSelect={handleStatusChange}
@@ -137,16 +152,16 @@ export const Projeto = () => {
             <TextInput
               label="Data do pedido"
               placeholder="DD/MM/AAAA"
-              name="pedidoData"
+              name="dataPedido"
               inputValue={projeto.dataPedido}
-              onChange={() => {}}
+              onChange={handleInputChange}
             />
             <TextInput
               label="Data de entrega"
               placeholder="DD/MM/AAAA"
-              name="pedidoData"
+              name="dataEntrega"
               inputValue={projeto.dataEntrega}
-              onChange={() => {}}
+              onChange={handleInputChange}
             />
 
             <div className="clientBox">
@@ -260,6 +275,9 @@ export const Projeto = () => {
                       >
                         R${service.valor.toFixed(2)}
                       </div>
+                      <div className="delButton">
+                        <img src={PlusIcon} alt="" />
+                      </div>
                     </div>
                   )
                 })}
@@ -272,10 +290,55 @@ export const Projeto = () => {
               placeholder="Digite uma descrição para o projeto"
               name="description"
               inputValue={projeto.descricao}
-              onChange={() => {}}
+              onChange={handleDescriptionChange}
             />
           </div>
-          <div className="col3">Col3</div>
+          <div className="col3">
+            <div className="gastosBox">
+              <div className="header">
+                <div className="title">Gastos</div>
+                <div className="addButton">
+                  <img src={PlusIcon} alt="" />
+                </div>
+              </div>
+              <div className="content">
+                {gastos.map((gasto, id) => {
+                  return (
+                    <div className="gasto" key={id}>
+                      <div className="name">{gasto.titulo}</div>
+                      <div className="type">{gasto.tipo}</div>
+                      <div className="valor">R${gasto.valor.toFixed(2)}</div>
+                      <div className="delButton">
+                        <img src={PlusIcon} alt="" />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+            <div className="tabelaValores">
+              <div className="line">
+                <div className="name">Serviços</div>
+                <div className="value">R$0,00</div>
+              </div>
+              <div className="line">
+                <div className="name">Gastos do projeto</div>
+                <div className="value">R$0,00</div>
+              </div>
+              <div className="line">
+                <div className="name">Total do cliente</div>
+                <div className="value">R$0,00</div>
+              </div>
+              <div className="line">
+                <div className="name">Lucro</div>
+                <div className="value">R$0,00</div>
+              </div>
+            </div>
+            <div className="buttons">
+              <div className="button excluir">Excluir</div>
+              <div className="button salvar">Salvar</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

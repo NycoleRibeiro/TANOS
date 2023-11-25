@@ -7,7 +7,7 @@ interface TextInputProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   placeholder: string
   name: string
-  inputValue: string
+  inputValue?: string
   label?: string
   icon?: string
   clearText?: boolean
@@ -25,11 +25,9 @@ export const TextInput: React.FC<TextInputProps> = ({
   error,
 }) => {
   const [focus, setFocus] = useState(false) // Estado para controlar o foco do input, utilizado para questões de estilo
-  const [value, setValue] = useState(inputValue) // Estado para controlar o valor do input, utilizado para questões de estilo
 
   // Função para lidar com a mudança de valor do input
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value)
     onChange(event) // Chama a função passada por prop para lidar com a mudança de valor
   }
 
@@ -40,24 +38,24 @@ export const TextInput: React.FC<TextInputProps> = ({
           {label}
         </label>
       )}
-      <div className={`input ${focus || value ? 'active' : ''}`}>
+      <div className={`input ${focus || inputValue ? 'active' : ''}`}>
         {icon && <img src={icon} alt="" className="icon" />}
         <input
           type="text"
           name={name}
           className="input-text"
-          value={value}
+          value={inputValue}
           placeholder={placeholder}
           onChange={handleInputChange}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
         />
-        {clearText && value && (
+        {clearText && inputValue && (
           <img
             src={ClearIcon}
             alt=""
             className="clear-icon"
-            onClick={() => setValue('')}
+            onClick={() => {}}
           />
         )}
       </div>

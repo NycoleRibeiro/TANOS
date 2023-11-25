@@ -1,18 +1,4 @@
-interface Client {
-  nome: string
-  instagram: string
-  facebook: string
-  site: string
-  linkedin: string
-  email: string
-  telefone: string
-  clientId: number
-}
-
-interface User {
-  userId: number
-  clients: Client[]
-}
+import { Client, User } from './Types'
 
 const listaDeClientes: User[] = [
   {

@@ -1,31 +1,4 @@
-interface Expense {
-  titulo: string
-  tipo: 'Projeto' | 'Cliente'
-  valor: number
-}
-
-interface ToDoItem {
-  check: boolean
-  descricao: string
-}
-
-interface Project {
-  projectId: number
-  titulo: string
-  descricao: string
-  status: 'Não iniciado' | 'Em andamento' | 'Concluído'
-  dataPedido: string
-  dataEntrega: string
-  clienteId: number
-  servicosId: number[]
-  gastos: Expense[]
-  toDoList: ToDoItem[]
-}
-
-interface UserProjects {
-  userId: number
-  projects: Project[]
-}
+import { Expense, ToDoItem, Project, UserProjects } from './Types'
 
 const listaDeProjetos: UserProjects[] = [
   {

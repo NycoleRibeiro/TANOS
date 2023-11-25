@@ -1,16 +1,4 @@
-interface Service {
-  nome: string
-  descricao: string
-  categoria: string
-  valor: number
-  valorFixo: boolean
-  serviceId: number
-}
-
-interface UserServices {
-  userId: number
-  services: Service[]
-}
+import { Service, UserServices } from './Types'
 
 const listaDeServicos: UserServices[] = [
   {
