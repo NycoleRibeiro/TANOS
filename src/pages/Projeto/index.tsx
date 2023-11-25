@@ -3,13 +3,22 @@ import { useNavigate, useParams } from 'react-router-dom'
 import './style.sass'
 
 import PlusIcon from '../../assets/images/add.svg'
+import emailIcon from '../../assets/images/email.svg'
+import faceIcon from '../../assets/images/face.svg'
+import instaIcon from '../../assets/images/insta.svg'
+import linkedinIcon from '../../assets/images/linkedin.svg'
+import phoneIcon from '../../assets/images/phone.svg'
+import siteIcon from '../../assets/images/site.svg'
+
 import { Header } from '../../components/header'
 import { LargeTextInput } from '../../components/inputs/LargeTextInput'
 import { SingleSelect } from '../../components/inputs/SingleSelect'
 import { TextInput } from '../../components/inputs/TextInput'
 import { Sidebar } from '../../components/sidebar'
 
+import { getClientById } from '../../database/Clients'
 import { getProjectById } from '../../database/Projects'
+import { getServicesById } from '../../database/Services'
 import { getUserData } from '../../loggedUser'
 
 export const Projeto = () => {
@@ -37,6 +46,17 @@ export const Projeto = () => {
     toDoList: ToDoItem[]
   }
 
+  interface Client {
+    nome: string
+    instagram: string
+    facebook: string
+    site: string
+    linkedin: string
+    email: string
+    telefone: string
+    clientId: number
+  }
+
   const { projectId } = useParams()
   const projectIdNumber = projectId ? parseInt(projectId, 10) : null
   const user = getUserData()
@@ -53,15 +73,39 @@ export const Projeto = () => {
     toDoList: [],
   }
 
+  let client: Client = {
+    nome: '',
+    instagram: '',
+    facebook: '',
+    site: '',
+    linkedin: '',
+    email: '',
+    telefone: '',
+    clientId: 0,
+  }
+
+  let services = []
+
   if (user && projectIdNumber !== null) {
     const fetchedProject = getProjectById(user.userId, projectIdNumber)
     if (fetchedProject) {
       projeto = fetchedProject
+      const fetchedClient = getClientById(user.userId, fetchedProject.clienteId)
+      if (fetchedClient) {
+        client = fetchedClient
+      }
+      const fetchedServices = getServicesById(
+        user.userId,
+        fetchedProject.servicosId,
+      )
+      if (fetchedServices) {
+        services = fetchedServices
+      }
     }
   }
 
   const handleStatusChange = (newStatus) => {
-    setProjeto({...projeto, status: newStatus});
+    setProjeto({ ...projeto, status: newStatus })
   }
 
   return (
@@ -112,7 +156,89 @@ export const Projeto = () => {
                   <img src={PlusIcon} alt="" />
                 </div>
               </div>
-              <div className="content">Cliente vai aqui</div>
+              <div className="content">
+                {client.clientId !== 0 && (
+                  <div className="client" key={client.clientId}>
+                    <div className="avatar">
+                      <img
+                        src="https://cdn-icons-png.flaticon.com/512/1053/1053244.png"
+                        alt=""
+                      />
+                    </div>
+
+                    <div className="name">{client.nome}</div>
+
+                    <div className="buttons">
+                      {client.instagram !== '' && (
+                        <div
+                          className="button-social"
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            window.open(client.instagram, '_blank')
+                          }}
+                        >
+                          <img src={instaIcon} alt="" />
+                        </div>
+                      )}
+
+                      {client.facebook !== '' && (
+                        <div
+                          className="button-social"
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            window.open(client.facebook, '_blank')
+                          }}
+                        >
+                          <img src={faceIcon} alt="" />
+                        </div>
+                      )}
+
+                      {client.site !== '' && (
+                        <div
+                          className="button-social"
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            window.open(client.site, '_blank')
+                          }}
+                        >
+                          <img src={siteIcon} alt="" />
+                        </div>
+                      )}
+
+                      {client.linkedin !== '' && (
+                        <div
+                          className="button-social"
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            window.open(client.linkedin, '_blank')
+                          }}
+                        >
+                          <img src={linkedinIcon} alt="" />
+                        </div>
+                      )}
+
+                      <div
+                        className="button-contact"
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          handleContactClick(client.email)
+                        }}
+                      >
+                        <img src={emailIcon} alt="" />
+                      </div>
+                      <div
+                        className="button-contact"
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          handleContactClick(client.telefone)
+                        }}
+                      >
+                        <img src={phoneIcon} alt="" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="servicesBox">
@@ -122,7 +248,22 @@ export const Projeto = () => {
                   <img src={PlusIcon} alt="" />
                 </div>
               </div>
-              <div className="content">Serviços vão aqui</div>
+              <div className="content">
+                {services.map((service) => {
+                  return (
+                    <div className="service" key={service.serviceId}>
+                      <div className="name">{service.nome}</div>
+                      <div
+                        className={`value ${
+                          service.valorFixo ? 'fixed-value' : ''
+                        }`}
+                      >
+                        R${service.valor.toFixed(2)}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           </div>
           <div className="col2">

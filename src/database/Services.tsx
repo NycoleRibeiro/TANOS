@@ -253,3 +253,17 @@ export const updateService = (
   console.error('UserId não encontrado')
   return null
 }
+
+export const getServicesById = (
+  userId: number,
+  serviceIds: number[],
+): Service[] => {
+  const userServices = findUserServices(userId)
+  if (userServices) {
+    return userServices.filter((service) =>
+      serviceIds.includes(service.serviceId),
+    )
+  }
+  console.error('UserId ou ServiceIds não encontrado')
+  return []
+}

@@ -151,64 +151,6 @@ const findUser = (userId: number): User | undefined => {
   return listaDeClientes.find((user) => user.userId === userId)
 }
 
-// export const getClients = (userId: number) => {
-//   // retorna uma lista com todos clientes de um usuário
-//   for (const user of listaDeClientes) {
-//     if (user.userId === userId) {
-//       const sortedClients = user.clients.slice() // Cria uma cópia da lista de clientes
-//       sortedClients.sort((a, b) => a.nome.localeCompare(b.nome))
-//       return sortedClients
-//     }
-//   }
-//   console.log(`'UserId não encontrado'`)
-//   return []
-// }
-
-// export const insertClient = (userId: number, client: Client) => {
-//   for (const user of listaDeClientes) {
-//     if (user.userId === userId) {
-//       user.clients.push(client)
-//       return 'success'
-//     }
-//   }
-//   console.log(`'UserId não encontrado'`)
-//   return null
-// }
-
-// export const removeClient = (userId: number, clientId: number) => {
-//   for (const user of listaDeClientes) {
-//     if (user.userId === userId) {
-//       for (const index in user.clients) {
-//         if (user.clients[index].clientId === clientId) {
-//           user.clients.splice(Number(index), 1)
-//           return 'success'
-//         }
-//       }
-//       console.log(`'ClientId não encontrado'`)
-//       return null
-//     }
-//   }
-//   console.log(`'UserId não encontrado'`)
-//   return null
-// }
-
-// export const updateClient = (userId: number, client: Client) => {
-//   for (const user of listaDeClientes) {
-//     if (user.userId === userId) {
-//       for (const index in user.clients) {
-//         if (user.clients[index].clientId === client.clientId) {
-//           user.clients[Number(index)] = client
-//           return 'success'
-//         }
-//       }
-//       console.log(`'ClientId não encontrado'`)
-//       return null
-//     }
-//   }
-//   console.log(`'UserId não encontrado'`)
-//   return null
-// }
-
 export const getClients = (userId: number): Client[] => {
   const user = findUser(userId)
   if (user) {
@@ -263,6 +205,19 @@ export const updateClient = (
     }
     console.error('ClientId não encontrado')
     return null
+  }
+  console.error('UserId não encontrado')
+  return null
+}
+
+export const getClientById = (
+  userId: number,
+  clientId: number,
+): Client | null => {
+  const user = findUser(userId)
+  if (user) {
+    const client = user.clients.find((client) => client.clientId === clientId)
+    return client || null
   }
   console.error('UserId não encontrado')
   return null
