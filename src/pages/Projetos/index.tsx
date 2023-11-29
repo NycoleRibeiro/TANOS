@@ -76,15 +76,24 @@ export const Projetos = () => {
         <div className="quadros">
           <div className="quadro">
             <div className="header">Não iniciado</div>
-            <div className="cards">{naoIniciados.map(renderProjectCard)}</div>
+            <div className="cards">
+              <div className="buttonCreateProject">Criar novo projeto</div>
+              {naoIniciados.map(renderProjectCard)}
+            </div>
           </div>
           <div className="quadro">
             <div className="header">Em andamento</div>
-            <div className="cards">{emAndamento.map(renderProjectCard)}</div>
+            <div className="cards">
+              <div className="buttonCreateProject">Criar novo projeto</div>
+              {emAndamento.map(renderProjectCard)}
+            </div>
           </div>
           <div className="quadro">
             <div className="header">Concluído</div>
-            <div className="cards">{concluidos.map(renderProjectCard)}</div>
+            <div className="cards">
+              <div className="buttonCreateProject">Criar novo projeto</div>
+              {concluidos.map(renderProjectCard)}
+            </div>
           </div>
         </div>
       </div>
