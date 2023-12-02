@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import './style.sass'
 
 import PlusIcon from '../../assets/images/add.svg'
@@ -16,10 +16,15 @@ import { SingleSelect } from '../../components/inputs/SingleSelect'
 import { TextInput } from '../../components/inputs/TextInput'
 import { Sidebar } from '../../components/sidebar'
 import { ToastNotification } from '../../components/toast-notification'
+import { ModalNewClient } from './modalNewCliente'
 import { ModalNewGasto } from './modalNewGasto'
 
 import { getClientById } from '../../database/Clients'
-import { getProjectById } from '../../database/Projects'
+import {
+  getProjectById,
+  updateProject,
+  updateProjectExpenses,
+} from '../../database/Projects'
 import { getServicesById } from '../../database/Services'
 import { getUserData } from '../../loggedUser'
 
@@ -62,6 +67,7 @@ export const Projeto = () => {
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
   const [isModalGastosOpen, setIsModalGastosOpen] = useState(false)
+  const [isModalClientesOpen, setIsModalClientesOpen] = useState(false)
 
   useEffect(() => {
     if (user && projectIdNumber !== null) {
@@ -144,10 +150,63 @@ export const Projeto = () => {
       )
       return
     }
+    const updatedGastos = [...projeto.gastos, novoGasto]
+    const result = updateProjectExpenses(
+      user.userId,
+      projeto.projectId,
+      updatedGastos,
+    )
+    if (result === 'success') {
+      setGastos((gastosAtual) => [...gastosAtual, novoGasto])
+      setToastMessage('Gasto adicionado com sucesso!')
+      closeModalGastos()
+    } else {
+      setToastMessage('Erro ao adicionar gasto, tente novamente mais tarde!')
+    }
+  }
 
-    setGastos((gastosAtual) => [...gastosAtual, novoGasto])
-    setToastMessage('Gasto adicionado com sucesso!')
-    closeModalGastos()
+  const handleRemoveGasto = (gastoTitulo: string) => {
+    const updatedGastos = projeto.gastos.filter(
+      (gasto) => gasto.titulo !== gastoTitulo,
+    )
+
+    const result = updateProjectExpenses(
+      user.userId,
+      projeto.projectId,
+      updatedGastos,
+    )
+
+    if (result === 'success') {
+      setGastos(updatedGastos)
+    } else {
+      setToastMessage('Erro ao remover gasto, tente novamente mais tarde!')
+    }
+  }
+
+  const openModalClientes = () => {
+    setIsModalClientesOpen(true)
+  }
+
+  // Função para fechar o modal de clientes
+  const closeModalClientes = () => {
+    setIsModalClientesOpen(false)
+  }
+
+  const handleClientSelect = (selectedClient: Client) => {
+    const updatedProject = { ...projeto, clienteId: selectedClient.clientId }
+    setProjeto(updatedProject)
+    const updateResult = updateProject(user.userId, updatedProject)
+    if (updateResult === 'success') {
+      // Se a atualização for bem-sucedida, mostre um toast e feche o modal
+      setClient(selectedClient)
+      closeModalClientes()
+      setToastMessage('Cliente alterado com sucesso!')
+      setShowToast(true)
+    } else {
+      // Se a atualização falhar, mostre um toast com erro
+      setToastMessage('Erro ao atualizar cliente, tente novamente mais tarde.')
+      setShowToast(true)
+    }
   }
 
   return (
@@ -156,6 +215,13 @@ export const Projeto = () => {
       {isModalGastosOpen && (
         <ModalNewGasto onClose={closeModalGastos} onConfirm={handleNewGasto} />
       )}
+      {isModalClientesOpen && (
+        <ModalNewClient
+          onClose={closeModalClientes}
+          onConfirm={handleClientSelect}
+        />
+      )}
+
       <Sidebar activePage="Projetos" />
       <div className="content">
         <Header
@@ -198,7 +264,7 @@ export const Projeto = () => {
             <div className="clientBox">
               <div className="header">
                 <div className="title">Cliente</div>
-                <div className="addButton">
+                <div className="addButton" onClick={openModalClientes}>
                   <img src={PlusIcon} alt="" />
                 </div>
               </div>
@@ -340,7 +406,13 @@ export const Projeto = () => {
                       <div className="type">{gasto.tipo}</div>
                       <div className="valor">R${gasto.valor.toFixed(2)}</div>
                       <div className="delButton">
-                        <img src={PlusIcon} alt="" />
+                        <img
+                          src={PlusIcon}
+                          alt=""
+                          onClick={() => {
+                            handleRemoveGasto(gasto.titulo)
+                          }}
+                        />
                       </div>
                     </div>
                   )
@@ -364,10 +436,6 @@ export const Projeto = () => {
                 <div className="name">Lucro</div>
                 <div className="value">R$0,00</div>
               </div>
-            </div>
-            <div className="buttons">
-              <div className="button excluir">Excluir</div>
-              <div className="button salvar">Salvar</div>
             </div>
           </div>
         </div>

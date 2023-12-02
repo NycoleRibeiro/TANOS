@@ -4,7 +4,7 @@ import { SingleSelect } from '../../components/inputs/SingleSelect'
 import { TextInput } from '../../components/inputs/TextInput'
 import { Expense } from '../../database/Types'
 
-import './styleModalGasto.sass'
+import './styleModal.sass'
 
 type TipoGasto = 'Projeto' | 'Cliente'
 
