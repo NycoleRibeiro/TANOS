@@ -1,7 +1,7 @@
 @use '../../variables' as v
 
 .projeto-container
-  background: v.$n-10
+  background: v.$n-20
   width: 100vw
   height: 100vh
   display: flex
@@ -64,10 +64,15 @@
               border: 1px solid #FFF
               width: 24px
               height: 24px
+              transition: all 0.3s
 
               img
                 width: 90%
                 filter: invert(100%)
+
+              &:hover
+                cursor: pointer
+                background: rgba(0, 0, 0, 0.25)
 
           .content
             display: flex
@@ -165,10 +170,15 @@
               border: 1px solid #FFF
               width: 24px
               height: 24px
+              transition: all 0.3s
 
               img
                 width: 90%
                 filter: invert(100%)
+
+              &:hover
+                cursor: pointer
+                background: rgba(0, 0, 0, 0.25)
             
           .content
             display: flex
@@ -264,10 +274,15 @@
               border: 1px solid #FFF
               width: 24px
               height: 24px
+              transition: all 0.3s
 
               img
                 width: 90%
                 filter: invert(100%)
+
+              &:hover
+                cursor: pointer
+                background: rgba(0, 0, 0, 0.25)
             
           .content
             display: flex

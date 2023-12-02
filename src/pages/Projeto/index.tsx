@@ -16,13 +16,14 @@ import { SingleSelect } from '../../components/inputs/SingleSelect'
 import { TextInput } from '../../components/inputs/TextInput'
 import { Sidebar } from '../../components/sidebar'
 import { ToastNotification } from '../../components/toast-notification'
+import { ModalNewGasto } from './modalNewGasto'
 
 import { getClientById } from '../../database/Clients'
 import { getProjectById } from '../../database/Projects'
 import { getServicesById } from '../../database/Services'
 import { getUserData } from '../../loggedUser'
 
-import { Client, Project, Service } from '../../database/Types'
+import { Client, Expense, Project, Service } from '../../database/Types'
 
 export const Projeto = () => {
   const { projectId } = useParams()
@@ -59,6 +60,8 @@ export const Projeto = () => {
   const [gastos, setGastos] = useState(projeto.gastos)
 
   const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
+  const [isModalGastosOpen, setIsModalGastosOpen] = useState(false)
 
   useEffect(() => {
     if (user && projectIdNumber !== null) {
@@ -83,6 +86,16 @@ export const Projeto = () => {
       }
     }
   }, [user, projectIdNumber])
+
+  useEffect(() => {
+    if (toastMessage) {
+      setShowToast(true)
+      setTimeout(() => {
+        setShowToast(false)
+        setToastMessage('')
+      }, 5000) // 5 segundos
+    }
+  }, [toastMessage])
 
   const handleStatusChange = (newStatus: string) => {
     setProjeto({ ...projeto, status: newStatus })
@@ -112,18 +125,36 @@ export const Projeto = () => {
   const handleContactClick = (text: string) => {
     copyTextToClipboard(text)
     setShowToast(true)
-    setTimeout(() => {
-      setShowToast(false)
-    }, 5000) // 5 segundos
+    setToastMessage('Valor copiado para área de transferência')
+  }
+
+  const openModalGastos = () => {
+    setIsModalGastosOpen(true)
+  }
+
+  const closeModalGastos = () => {
+    setIsModalGastosOpen(false)
+  }
+
+  const handleNewGasto = (novoGasto: Expense) => {
+    // Validação básica
+    if (!novoGasto.titulo || novoGasto.valor <= 0) {
+      setToastMessage(
+        'Preencha todos os campos e forneça um valor de gasto válido.',
+      )
+      return
+    }
+
+    setGastos((gastosAtual) => [...gastosAtual, novoGasto])
+    setToastMessage('Gasto adicionado com sucesso!')
+    closeModalGastos()
   }
 
   return (
     <div className="projeto-container">
-      {showToast && (
-        <ToastNotification
-          type="ok"
-          text="Valor copiado para área de transferência"
-        />
+      {showToast && <ToastNotification type="ok" text={toastMessage} />}
+      {isModalGastosOpen && (
+        <ModalNewGasto onClose={closeModalGastos} onConfirm={handleNewGasto} />
       )}
       <Sidebar activePage="Projetos" />
       <div className="content">
@@ -297,7 +328,7 @@ export const Projeto = () => {
             <div className="gastosBox">
               <div className="header">
                 <div className="title">Gastos</div>
-                <div className="addButton">
+                <div className="addButton" onClick={openModalGastos}>
                   <img src={PlusIcon} alt="" />
                 </div>
               </div>
