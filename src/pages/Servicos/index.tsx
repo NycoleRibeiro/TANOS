@@ -16,18 +16,10 @@ import {
   removeService,
   updateService,
 } from '../../database/Services'
+import { Services } from '../../database/Types'
 import { getUserData } from '../../loggedUser'
 
 export const Servicos = () => {
-  interface Service {
-    nome: string
-    descricao: string
-    categoria: string
-    valor: number
-    valorFixo: boolean
-    serviceId: number
-  }
-
   const user = getUserData() // Obtém o usuário atual
   const [isModalOpen, setIsModalOpen] = useState(false)
 

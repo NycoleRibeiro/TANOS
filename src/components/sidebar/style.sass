@@ -15,7 +15,6 @@
         margin-left: 3px
         margin-right: 3px
         position: relative
-        transition: background-color 0.3s, left 0.3s
 
         &:hover
             background-color: v.$n-20
@@ -24,6 +23,7 @@
 
         &:hover .page-name
             opacity: 1
+            display: flex
 
     .icon
         display: flex
@@ -43,15 +43,14 @@
     .page-name
         height: 48px
         position: absolute
-        display: flex
         align-items: center
         margin-left: 45px
         padding: 0 16px
         opacity: 0
+        display: none
 
         background-color: v.$n-20
         border-radius: 0 5px 5px 0
-        transition: opacity 0.3s, left 0.3s
         
         color: v.$n-95
         font-weight: 400

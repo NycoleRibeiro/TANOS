@@ -28,6 +28,24 @@ export interface UserServices {
   services: Service[]
 }
 
+export interface Expenses {
+  expenseId: number
+  pago: boolean
+  descricao: string
+  valor: number
+  pagamentoDia: number
+  pagamentoMes: number
+  pagamentoAno: number
+  categoria: string
+  formaPagamento: 'Dinheiro' | 'Crédito' | 'Débito' | 'PIX' | 'Boleto'
+  recorrencia: 'Única' | 'Mensal' | 'Anual' | 'Parcelado'
+}
+
+export interface UserExpenses {
+  userId: number
+  expenses: Expenses[]
+}
+
 export interface Expense {
   titulo: string
   tipo: 'Projeto' | 'Cliente'

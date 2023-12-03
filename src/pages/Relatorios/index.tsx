@@ -11,7 +11,7 @@ export const Relatorios = () => {
     <div className="relatorios-container">
       <Sidebar activePage="Relatorios" />
       <div className="content">
-        <Header path={[{ label: 'Relatórios', path: '/home' }]} />
+        <Header path={[{ label: 'Relatórios', path: '/relatorios' }]} />
         <div className="subheader">
           <div className="title">Relatórios de Dezembro / 2023</div>
           <div className="dataSelection">
