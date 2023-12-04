@@ -1,0 +1,103 @@
+@use '../../variables' as v
+
+.backgroundBlur
+  position: fixed
+  display: flex
+  align-items: center
+  justify-content: center
+  width: 100%
+  height: 100%
+  background: #00000070
+  backdrop-filter: blur(2.5px)
+  z-index: 1
+
+  .modalGasto
+    width: 500px
+    min-height: 300px
+    max-height: 70vh
+    background: v.$n-20
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: flex-start
+    border-radius: 10px
+    box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.50)
+
+    ::-webkit-scrollbar 
+      width: 8px
+
+    ::-webkit-scrollbar-track 
+      background: v.$n-10
+
+    ::-webkit-scrollbar-thumb 
+      background-color: v.$n-30
+      border-radius: 20px
+
+    .header
+      display: flex
+      width: 100%
+      min-height: 48px
+      margin-bottom: 16px
+      justify-content: center
+      align-items: center
+      font-size: 16px
+      border-bottom: 1px solid v.$n-30
+      color: #fff
+      font-weight: 500
+      font-size: 18px
+
+    .content
+      width: 100%
+      flex: 1
+      padding: 0 24px
+      gap: 8px
+      display: flex
+      overflow-y: auto
+      align-items: center
+      justify-content: flex-start
+
+      .search
+        width: 100%
+        min-height: 40px
+        border-radius: 10px
+        padding: 0 16px 
+        background-color: v.$n-80
+
+      .clientList
+        width: 100%
+        display: flex
+        flex-direction: column
+        gap: 3px
+
+        .clientItem
+          display: flex
+          align-items: center
+          gap: 16px
+          border-radius: 10px
+          padding: 16px 
+          background-color: v.$n-10
+          color: #f4f4f4
+          font-weight: 500
+          cursor: pointer
+
+          .avatar
+            width: 32px
+            img
+              width: 100%
+
+          &:hover
+            background-color: lighten(v.$n-10, 3%)
+
+        .selected
+          background-color: v.$p-40
+          &:hover
+            background-color: v.$p-40
+
+    .buttons
+      display: flex
+      justify-content: flex-end
+      width: 100%
+      gap: 10px
+      padding: 16px 24px
+      border-top: 1px solid v.$n-30
+      margin-top: 16px

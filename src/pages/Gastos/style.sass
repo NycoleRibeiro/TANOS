@@ -55,8 +55,12 @@
                 
                 .line
                     display: flex
+                    align-items: center
                     padding: 16px 16px
-                    border: 1px solid v.$s-20
+                    border: 1px solid v.$s-20     
+                    cursor: pointer
+                    &:hover
+                        background-color: lighten(v.$n-10, 2%)         
 
                 .col1
                     display: flex
@@ -85,9 +89,19 @@
                     justify-content: center
                     width: 180px
                     padding-left: 16px
+                    .categoria
+                        color: v.$p-70
+                        border-radius: 5px
+                        border: 1px solid v.$p-70
+                        padding: 5px 16px
                 .col7
                     display: flex
                     align-items: center
                     justify-content: center
                     width: 180px
                     padding-left: 16px
+                    .formaPagamento
+                        color: #AEC5FC
+                        border-radius: 5px
+                        border: 1px solid #AEC5FC
+                        padding: 5px 16px

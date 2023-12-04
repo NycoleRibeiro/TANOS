@@ -4,7 +4,7 @@ import { Header } from '../../components/header'
 import { SingleSelect } from '../../components/inputs/SingleSelect'
 import { Sidebar } from '../../components/sidebar'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FilledButton } from '../../components/buttons/filledButton'
 import {
   addExpense,
@@ -35,6 +35,79 @@ export const Gastos = () => {
   const [expenses, setExpenses] = useState(
     user ? getExpensesByUserId(user.userId) : [],
   )
+
+  const currentMonthIndex = new Date().getMonth() // Mês atual como número (0-11)
+  const currentYear = new Date().getFullYear() // Ano atual como número
+
+  const monthNames = [
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro',
+  ]
+
+  const currentMonthName = monthNames[currentMonthIndex]
+
+  const [selectedMonth, setSelectedMonth] = useState(currentMonthIndex + 1) // Mês atual como número (1-12)
+  const [selectedYear, setSelectedYear] = useState(currentYear)
+
+  useEffect(() => {
+    updateExpensesList()
+  }, [user, selectedMonth, selectedYear])
+
+  const updateExpensesList = () => {
+    const filteredExpenses = getExpensesByUserId(user.userId).filter(
+      (expense) => {
+        return (
+          expense.pagamentoMes === selectedMonth &&
+          expense.pagamentoAno === selectedYear
+        )
+      },
+    )
+    setExpenses(filteredExpenses)
+  }
+
+  const handleMonthSelect = (month) => {
+    const monthIndex =
+      [
+        'Janeiro',
+        'Fevereiro',
+        'Março',
+        'Abril',
+        'Maio',
+        'Junho',
+        'Julho',
+        'Agosto',
+        'Setembro',
+        'Outubro',
+        'Novembro',
+        'Dezembro',
+      ].indexOf(month) + 1
+    setSelectedMonth(monthIndex)
+  }
+
+  const handleYearSelect = (year) => {
+    setSelectedYear(parseInt(year, 10))
+  }
+
+  const gerarOpcoesAno = () => {
+    const anoAtual = new Date().getFullYear()
+    const opcoesAno = []
+    for (let i = 0; i <= 5; i++) {
+      opcoesAno.push((anoAtual - i).toString())
+    }
+    return opcoesAno
+  }
+
+  const opcoesAno = gerarOpcoesAno()
 
   const handlePagoChange = (expenseToUpdate) => {
     // Atualiza o estado de 'pago' do gasto
@@ -79,34 +152,23 @@ export const Gastos = () => {
       <div className="content">
         <Header path={[{ label: 'Gastos', path: '/gastos' }]} />
         <div className="subheader">
-          <div className="title">Gastos de Dezembro / 2023</div>
+          <div className="title">
+            Gastos de {monthNames[selectedMonth - 1]} / {selectedYear}
+          </div>
           <div className="dataSelection">
             <SingleSelect
-              onSelect={() => {}}
+              onSelect={handleMonthSelect}
               placeholder="Mês"
               label="Mês"
-              options={[
-                'Janeiro',
-                'Fevereiro',
-                'Março',
-                'Abril',
-                'Maio',
-                'Junho',
-                'Julho',
-                'Agosto',
-                'Setembro',
-                'Outubro',
-                'Novembro',
-                'Dezembro',
-              ]}
-              initialValue={'Dezembro'}
+              options={monthNames}
+              initialValue={currentMonthName}
             />
             <SingleSelect
-              onSelect={() => {}}
+              onSelect={handleYearSelect}
               placeholder="Ano"
               label="Ano"
-              options={['2023', '2024']}
-              initialValue={'2023'}
+              options={opcoesAno}
+              initialValue={currentYear.toString()}
             />
           </div>
           <FilledButton text="Novo Gasto" size="150px" onClick={() => {}} />
@@ -143,8 +205,14 @@ export const Gastos = () => {
                     )}
                   </div>
                   <div className="col5">{expense.recorrencia}</div>
-                  <div className="col6">{expense.categoria}</div>
-                  <div className="col7">{expense.formaPagamento}</div>
+                  <div className="col6">
+                    <div className="categoria">{expense.categoria}</div>
+                  </div>
+                  <div className="col7">
+                    <div className="formaPagamento">
+                      {expense.formaPagamento}
+                    </div>
+                  </div>
                 </div>
               )
             })}
