@@ -56,42 +56,17 @@
       align-items: center
       justify-content: flex-start
 
-      .search
+      .info
         width: 100%
-        min-height: 40px
-        border-radius: 10px
-        padding: 0 16px 
-        background-color: v.$n-80
+        color: #d4d4d4
 
-      .clientList
-        width: 100%
+      .dataPagamento
         display: flex
-        flex-direction: column
-        gap: 3px
-
-        .clientItem
-          display: flex
-          align-items: center
-          gap: 16px
-          border-radius: 10px
-          padding: 16px 
-          background-color: v.$n-10
-          color: #f4f4f4
-          font-weight: 500
-          cursor: pointer
-
-          .avatar
-            width: 32px
-            img
-              width: 100%
-
-          &:hover
-            background-color: lighten(v.$n-10, 3%)
-
-        .selected
-          background-color: v.$p-40
-          &:hover
-            background-color: v.$p-40
+        align-items: flex-end
+        gap: 5px
+        .barra
+          font-size: 1.5rem
+          margin-bottom: 10px
 
     .buttons
       display: flex

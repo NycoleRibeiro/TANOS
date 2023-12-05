@@ -117,7 +117,6 @@ export const Servicos = () => {
   const editService = (service: Service, event) => {
     event.stopPropagation()
     setIsModalOpen(true)
-    console.log(service)
     setFormData(service)
   }
 

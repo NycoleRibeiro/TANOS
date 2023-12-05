@@ -121,7 +121,6 @@ export const Clientes = () => {
   const editClient = (client: Client, event) => {
     event.stopPropagation()
     setIsModalOpen(true)
-    console.log(client)
     setFormData(client)
   }
 

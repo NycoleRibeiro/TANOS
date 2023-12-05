@@ -6,6 +6,7 @@ import { Sidebar } from '../../components/sidebar'
 
 import { useEffect, useState } from 'react'
 import { FilledButton } from '../../components/buttons/filledButton'
+import { ToastNotification } from '../../components/toast-notification'
 import {
   addExpense,
   deleteExpense,
@@ -14,6 +15,7 @@ import {
 } from '../../database/Expenses'
 import { Expenses } from '../../database/Types'
 import { getUserData } from '../../loggedUser'
+import { ModalNewExpense } from './modalGasto'
 
 export const Gastos = () => {
   const user = getUserData() // Obtém o usuário atual
@@ -32,6 +34,7 @@ export const Gastos = () => {
     recorrencia: 'Única',
   })
   const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
   const [expenses, setExpenses] = useState(
     user ? getExpensesByUserId(user.userId) : [],
   )
@@ -58,6 +61,16 @@ export const Gastos = () => {
 
   const [selectedMonth, setSelectedMonth] = useState(currentMonthIndex + 1) // Mês atual como número (1-12)
   const [selectedYear, setSelectedYear] = useState(currentYear)
+
+  useEffect(() => {
+    if (toastMessage) {
+      setShowToast(true)
+      setTimeout(() => {
+        setShowToast(false)
+        setToastMessage('')
+      }, 5000)
+    }
+  }, [toastMessage])
 
   useEffect(() => {
     updateExpensesList()
@@ -146,9 +159,32 @@ export const Gastos = () => {
     return `${diaFormatado}/${mesFormatado}/${ano}`
   }
 
+  const handleAddNewExpense = (newExpenseData) => {
+    // Adicionar o novo gasto ao "banco" de dados
+    const result = addExpense(user.userId, newExpenseData)
+
+    if (result === 'success') {
+      // Atualize a lista de gastos na página principal
+      setExpenses([...expenses, newExpenseData])
+      setIsModalOpen(false)
+      setToastMessage('Novo gasto cadastrado com sucesso')
+    } else {
+      setToastMessage('Falha ao cadastrar novo gasto')
+    }
+  }
+
   return (
     <div className="gastos-container">
       <Sidebar activePage="Gastos" />
+      {isModalOpen && (
+        <ModalNewExpense
+          onClose={() => {
+            setIsModalOpen(false)
+          }}
+          onConfirm={handleAddNewExpense}
+        />
+      )}
+      {showToast && <ToastNotification type="ok" text={toastMessage} />}
       <div className="content">
         <Header path={[{ label: 'Gastos', path: '/gastos' }]} />
         <div className="subheader">
@@ -171,7 +207,13 @@ export const Gastos = () => {
               initialValue={currentYear.toString()}
             />
           </div>
-          <FilledButton text="Novo Gasto" size="150px" onClick={() => {}} />
+          <FilledButton
+            text="Novo Gasto"
+            size="150px"
+            onClick={() => {
+              setIsModalOpen(true)
+            }}
+          />
         </div>
         <div className="body">
           <div className="table">

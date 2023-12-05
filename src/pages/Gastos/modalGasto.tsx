@@ -132,13 +132,32 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
             inputValue={valor}
             onChange={handleValorChange}
           />
-          <TextInput
-            label="Pagamento em"
-            placeholder="DD/MM/AAAA"
-            name="pagamento"
-            inputValue={`${pagamentoDia}/${pagamentoMes}/${pagamentoAno}`}
-            onChange={handlePagamentoDataChange}
-          />
+          <div className="info">Data de Pagamento</div>
+          <div className="dataPagamento">
+            <TextInput
+              label="Dia"
+              placeholder="DD"
+              name="Dia"
+              inputValue={pagamentoDia}
+              onChange={handlePagamentoDiaChange}
+            />
+            <div className="barra">/</div>
+            <TextInput
+              label="Mês"
+              placeholder="MM"
+              name="pagamentoMes"
+              inputValue={pagamentoMes}
+              onChange={handlePagamentoMesChange}
+            />
+            <div className="barra">/</div>
+            <TextInput
+              label="Ano"
+              placeholder="AAAA"
+              name="pagamentoAno"
+              inputValue={pagamentoAno}
+              onChange={handlePagamentoAnoChange}
+            />
+          </div>
           <SingleSelect
             onSelect={handleRecorrenciaChange}
             placeholder="Recorrência do pagamento"
