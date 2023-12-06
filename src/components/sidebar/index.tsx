@@ -43,7 +43,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
         <div className="icon">
           <img src={homeIcon} alt="" />
         </div>
-        <div className="page-name">Início</div>
+        <div className="page-name">Dashboard</div>
       </div>
 
       <div
@@ -94,7 +94,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
         <div className="page-name">Gastos</div>
       </div>
 
-      <div
+      {/* <div
         className={activePage === 'Relatorios' ? 'menu-active' : 'menu'}
         onClick={() => {
           navigate('/relatorios')
@@ -104,7 +104,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
           <img src={relatoriosIcon} alt="" />
         </div>
         <div className="page-name">Relatórios</div>
-      </div>
+      </div> */}
 
       <div className="menu bottom" onClick={(event) => handleSignOut(event)}>
         <div className="icon">

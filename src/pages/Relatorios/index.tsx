@@ -9,9 +9,9 @@ import { getUserData } from '../../loggedUser'
 export const Relatorios = () => {
   return (
     <div className="relatorios-container">
-      <Sidebar activePage="Relatorios" />
+      <Sidebar activePage="Home" />
       <div className="content">
-        <Header path={[{ label: 'Relatórios', path: '/relatorios' }]} />
+        <Header path={[{ label: 'Dashboard', path: '/home' }]} />
         <div className="subheader">
           <div className="title">Relatórios de Dezembro / 2023</div>
           <div className="dataSelection">

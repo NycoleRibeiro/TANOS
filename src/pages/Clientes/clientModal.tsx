@@ -5,6 +5,8 @@ import { Client } from '../../database/Types'
 
 import deleteIcon from '../../assets/images/delete.svg'
 
+import './styleClientModal.sass'
+
 interface ClientModalProps {
   client: Client | null // 'null' para um novo cliente
   onSave: (client: Client) => void

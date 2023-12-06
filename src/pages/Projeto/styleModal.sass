@@ -93,6 +93,36 @@
           &:hover
             background-color: v.$p-40
 
+      .serviceList
+        width: 100%
+        display: flex
+        flex-direction: column
+        gap: 3px
+
+        .serviceItem
+          display: flex
+          align-items: center
+          gap: 16px
+          border-radius: 10px
+          padding: 16px 
+          background-color: v.$n-10
+          color: #f4f4f4
+          font-weight: 500
+          cursor: pointer
+
+          &:hover
+            background-color: lighten(v.$n-10, 3%)
+
+          .name
+            display: flex
+            flex: 1
+
+        .selected
+          background-color: v.$p-40
+          &:hover
+            background-color: v.$p-40
+
+
     .buttons
       display: flex
       justify-content: flex-end

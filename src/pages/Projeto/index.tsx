@@ -29,6 +29,7 @@ import { getServicesById } from '../../database/Services'
 import { getUserData } from '../../loggedUser'
 
 import { Client, Expense, Project, Service } from '../../database/Types'
+import { ModalNewService } from './modalNewService'
 
 export const Projeto = () => {
   const { projectId } = useParams()
@@ -68,6 +69,7 @@ export const Projeto = () => {
   const [toastMessage, setToastMessage] = useState('')
   const [isModalGastosOpen, setIsModalGastosOpen] = useState(false)
   const [isModalClientesOpen, setIsModalClientesOpen] = useState(false)
+  const [isModalServicesOpen, setIsModalServicesOpen] = useState(false)
 
   useEffect(() => {
     if (user && projectIdNumber !== null) {
@@ -104,7 +106,9 @@ export const Projeto = () => {
   }, [toastMessage])
 
   const handleStatusChange = (newStatus: string) => {
-    setProjeto({ ...projeto, status: newStatus })
+    const updatedProject = { ...projeto, status: newStatus }
+    setProjeto(updatedProject)
+    updateProject(user.userId, updatedProject)
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,7 +120,9 @@ export const Projeto = () => {
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target
-    setProjeto({ ...projeto, [name]: value })
+    const updatedProject = { ...projeto, [name]: value }
+    setProjeto(updatedProject)
+    updateProject(user.userId, updatedProject)
   }
 
   const copyTextToClipboard = (text: string) => {
@@ -209,6 +215,47 @@ export const Projeto = () => {
     }
   }
 
+  const handleRemoveService = (serviceId) => {
+    // Remove o serviço do estado local
+    const updatedServices = services.filter(
+      (service) => service.serviceId !== serviceId,
+    )
+    setServices(updatedServices)
+
+    // Atualiza a lista de IDs de serviços no objeto projeto
+    const updatedServiceIds = updatedServices.map(
+      (service) => service.serviceId,
+    )
+    const updatedProject = { ...projeto, servicosId: updatedServiceIds }
+
+    // Chama a função para atualizar o projeto no "banco de dados"
+    const updateResult = updateProject(user.userId, updatedProject)
+    if (updateResult === 'success') {
+      setToastMessage('Serviço removido com sucesso!')
+      setShowToast(true)
+    } else {
+      setToastMessage('Erro ao remover serviço, tente novamente mais tarde.')
+      setShowToast(true)
+    }
+  }
+
+  const handleAddService = (newService: Service) => {
+    const updatedServices = [...services, newService]
+    setServices(updatedServices)
+
+    const updatedServiceIds = updatedServices.map(
+      (service) => service.serviceId,
+    )
+    const updatedProject = { ...projeto, servicosId: updatedServiceIds }
+
+    const updateResult = updateProject(user.userId, updatedProject)
+    if (updateResult === 'success') {
+      setToastMessage('Serviço adicionado com sucesso!')
+    } else {
+      setToastMessage('Erro ao adicionar serviço, tente novamente mais tarde.')
+    }
+  }
+
   return (
     <div className="projeto-container">
       {showToast && <ToastNotification type="ok" text={toastMessage} />}
@@ -219,6 +266,12 @@ export const Projeto = () => {
         <ModalNewClient
           onClose={closeModalClientes}
           onConfirm={handleClientSelect}
+        />
+      )}
+      {isModalServicesOpen && (
+        <ModalNewService
+          onClose={() => setIsModalServicesOpen(false)}
+          onConfirm={handleAddService}
         />
       )}
 
@@ -356,7 +409,12 @@ export const Projeto = () => {
             <div className="servicesBox">
               <div className="header">
                 <div className="title">Serviços</div>
-                <div className="addButton">
+                <div
+                  className="addButton"
+                  onClick={() => {
+                    setIsModalServicesOpen(true)
+                  }}
+                >
                   <img src={PlusIcon} alt="" />
                 </div>
               </div>
@@ -372,7 +430,10 @@ export const Projeto = () => {
                       >
                         R${service.valor.toFixed(2)}
                       </div>
-                      <div className="delButton">
+                      <div
+                        className="delButton"
+                        onClick={() => handleRemoveService(service.serviceId)}
+                      >
                         <img src={PlusIcon} alt="" />
                       </div>
                     </div>
@@ -385,7 +446,7 @@ export const Projeto = () => {
             <LargeTextInput
               label="Descrição"
               placeholder="Digite uma descrição para o projeto"
-              name="description"
+              name="descricao"
               inputValue={projeto.descricao}
               onChange={handleDescriptionChange}
             />
