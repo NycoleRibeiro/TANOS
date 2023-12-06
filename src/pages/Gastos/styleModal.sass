@@ -56,6 +56,32 @@
       align-items: center
       justify-content: flex-start
 
+      .line
+        display: flex
+        width: 100%
+        align-items: flex-end
+        width: 100%
+        gap: 8px
+
+        .delButton
+          min-width: 48px
+          height: 48px
+
+          display: flex
+          align-items: center
+          justify-content: center
+
+          border-radius: 50%
+          background: v.$e-40
+          transition: all 0.3s
+
+          img
+            width: 60%
+
+          &:hover
+            background: v.$e-30
+            cursor: pointer
+
       .info
         width: 100%
         color: #d4d4d4

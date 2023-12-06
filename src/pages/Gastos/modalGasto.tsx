@@ -2,33 +2,42 @@ import React, { useState } from 'react'
 import { FilledButton } from '../../components/buttons/filledButton'
 import { SingleSelect } from '../../components/inputs/SingleSelect'
 import { TextInput } from '../../components/inputs/TextInput'
-import { Expense, Expenses } from '../../database/Types'
+import { Expenses } from '../../database/Types'
 
 import { getExpensesByUserId } from '../../database/Expenses'
 import { getUserData } from '../../loggedUser'
 import './styleModal.sass'
 
-type TipoGasto = 'Projeto' | 'Cliente'
+import deleteIcon from '../../assets/images/delete.svg'
 
 interface ModalNewExpenseProps {
   onClose: () => void
-  onConfirm: (gasto: Expense) => void
+  onConfirm: (gasto: Expenses) => void
+  onDelete: (expenseId: number) => void
+  gasto: Expenses
 }
 
 export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
   onClose,
   onConfirm,
+  onDelete,
+  gasto,
 }) => {
   const user = getUserData()
-  const [descricao, setDescricao] = useState('')
-  const [pago, setPago] = useState(false)
-  const [valor, setValor] = useState('')
-  const [pagamentoDia, setPagamentoDia] = useState('')
-  const [pagamentoMes, setPagamentoMes] = useState('')
-  const [pagamentoAno, setPagamentoAno] = useState('')
-  const [categoria, setCategoria] = useState('')
-  const [formaPagamento, setFormaPagamento] = useState('Dinheiro')
-  const [recorrencia, setRecorrencia] = useState('Única')
+  const [descricao, setDescricao] = useState(gasto.descricao)
+  const [valor, setValor] = useState(gasto.valor.toString())
+  const [pagamentoDia, setPagamentoDia] = useState(
+    gasto.pagamentoDia.toString(),
+  )
+  const [pagamentoMes, setPagamentoMes] = useState(
+    gasto.pagamentoMes.toString(),
+  )
+  const [pagamentoAno, setPagamentoAno] = useState(
+    gasto.pagamentoAno.toString(),
+  )
+  const [categoria, setCategoria] = useState(gasto.categoria)
+  const [formaPagamento, setFormaPagamento] = useState(gasto.formaPagamento)
+  const [recorrencia, setRecorrencia] = useState(gasto.recorrencia)
 
   const handleDescricaoChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -86,9 +95,11 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
       return
     }
 
-    const novoGasto: Expenses = {
-      expenseId: getNextExpenseId(), // Função para obter o próximo ID
-      pago,
+    const gastoId = gasto.expenseId !== 0 ? gasto.expenseId : getNextExpenseId()
+
+    const gastoAtualizado: Expenses = {
+      expenseId: gastoId,
+      pago: gasto.pago,
       descricao,
       valor: valorNumerico,
       pagamentoDia: parseInt(pagamentoDia, 10),
@@ -99,7 +110,7 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
       recorrencia,
     }
 
-    onConfirm(novoGasto)
+    onConfirm(gastoAtualizado)
   }
 
   const getNextExpenseId = () => {
@@ -116,20 +127,32 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
   return (
     <div className="backgroundBlur">
       <div className="modalGasto">
-        <div className="header">Inserir novo gasto</div>
+        <div className="header">
+          {gasto.expenseId === 0 ? 'Editar Gasto' : 'Inserir Novo Gasto'}
+        </div>
         <div className="content">
-          <TextInput
-            label="Descrição"
-            placeholder="Digite uma breve descrição do gasto"
-            name="descricao"
-            inputValue={descricao}
-            onChange={handleDescricaoChange}
-          />
+          <div className="line">
+            <TextInput
+              label="Descrição"
+              placeholder="Digite uma breve descrição do gasto"
+              name="descricao"
+              inputValue={descricao}
+              onChange={handleDescricaoChange}
+            />
+            {gasto.expenseId !== 0 && (
+              <div
+                className="delButton"
+                onClick={() => onDelete(gasto.expenseId)}
+              >
+                <img src={deleteIcon} alt="" />
+              </div>
+            )}
+          </div>
           <TextInput
             label="Valor"
             placeholder="Digite o valor do gasto"
             name="valor"
-            inputValue={valor}
+            inputValue={valor === '0' ? '' : valor.toString()}
             onChange={handleValorChange}
           />
           <div className="info">Data de Pagamento</div>
@@ -138,7 +161,7 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
               label="Dia"
               placeholder="DD"
               name="Dia"
-              inputValue={pagamentoDia}
+              inputValue={pagamentoDia === '0' ? '' : pagamentoDia}
               onChange={handlePagamentoDiaChange}
             />
             <div className="barra">/</div>
@@ -146,7 +169,7 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
               label="Mês"
               placeholder="MM"
               name="pagamentoMes"
-              inputValue={pagamentoMes}
+              inputValue={pagamentoMes === '0' ? '' : pagamentoMes}
               onChange={handlePagamentoMesChange}
             />
             <div className="barra">/</div>
@@ -154,7 +177,7 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
               label="Ano"
               placeholder="AAAA"
               name="pagamentoAno"
-              inputValue={pagamentoAno}
+              inputValue={pagamentoAno === '0' ? '' : pagamentoAno}
               onChange={handlePagamentoAnoChange}
             />
           </div>
@@ -163,7 +186,7 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
             placeholder="Recorrência do pagamento"
             label="Recorrência"
             options={['Única', 'Mensal', 'Anual', 'Parcelado']}
-            initialValue={recorrencia}
+            initialValue={gasto.expenseId === 0 ? '' : recorrencia}
           />
           <TextInput
             label="Categoria"
@@ -177,7 +200,7 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
             placeholder="Forma de pagamento"
             label="Forma de pagamento"
             options={['Dinheiro', 'Crédito', 'Débito', 'PIX', 'Boleto']}
-            initialValue={formaPagamento}
+            initialValue={gasto.expenseId === 0 ? '' : formaPagamento}
           />
         </div>
         <div className="buttons">

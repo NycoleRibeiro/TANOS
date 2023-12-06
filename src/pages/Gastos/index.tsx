@@ -30,8 +30,13 @@ export const Gastos = () => {
     pagamentoMes: 0,
     pagamentoAno: 0,
     categoria: '',
-    formaPagamento: 'Crédito',
-    recorrencia: 'Única',
+    formaPagamento: 'Dinheiro' as
+      | 'Dinheiro'
+      | 'Crédito'
+      | 'Débito'
+      | 'PIX'
+      | 'Boleto',
+    recorrencia: 'Única' as 'Única' | 'Mensal' | 'Anual' | 'Parcelado',
   })
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
@@ -88,7 +93,7 @@ export const Gastos = () => {
     setExpenses(filteredExpenses)
   }
 
-  const handleMonthSelect = (month) => {
+  const handleMonthSelect = (month: string) => {
     const monthIndex =
       [
         'Janeiro',
@@ -107,13 +112,14 @@ export const Gastos = () => {
     setSelectedMonth(monthIndex)
   }
 
-  const handleYearSelect = (year) => {
+  const handleYearSelect = (year: string) => {
     setSelectedYear(parseInt(year, 10))
   }
 
   const gerarOpcoesAno = () => {
     const anoAtual = new Date().getFullYear()
     const opcoesAno = []
+    opcoesAno.push((anoAtual + 1).toString())
     for (let i = 0; i <= 5; i++) {
       opcoesAno.push((anoAtual - i).toString())
     }
@@ -122,7 +128,7 @@ export const Gastos = () => {
 
   const opcoesAno = gerarOpcoesAno()
 
-  const handlePagoChange = (expenseToUpdate) => {
+  const handlePagoChange = (expenseToUpdate: Expenses) => {
     // Atualiza o estado de 'pago' do gasto
     const updatedExpense = {
       ...expenseToUpdate,
@@ -146,20 +152,20 @@ export const Gastos = () => {
     }
   }
 
-  const formatarValor = (valor) => {
+  const formatarValor = (valor: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
     }).format(valor)
   }
 
-  const formatarData = (dia, mes, ano) => {
+  const formatarData = (dia: number, mes: number, ano: number) => {
     const diaFormatado = String(dia).padStart(2, '0')
     const mesFormatado = String(mes).padStart(2, '0')
     return `${diaFormatado}/${mesFormatado}/${ano}`
   }
 
-  const handleAddNewExpense = (newExpenseData) => {
+  const handleAddNewExpense = (newExpenseData: Expenses) => {
     // Adicionar o novo gasto ao "banco" de dados
     const result = addExpense(user.userId, newExpenseData)
 
@@ -173,6 +179,22 @@ export const Gastos = () => {
     }
   }
 
+  const handleDeleteExpense = (expenseId: number) => {
+    if (user && user.userId !== undefined) {
+      const deleteResponse = deleteExpense(user.userId, expenseId)
+      if (deleteResponse === 'success') {
+        setIsModalOpen(false)
+        setToastMessage('Gasto deletado com sucesso!')
+        // Atualize a lista de despesas após a exclusão
+        updateExpensesList()
+      } else {
+        setToastMessage('Falha ao deletar gasto!')
+      }
+    } else {
+      setToastMessage('Usuário não identificado!')
+    }
+  }
+
   return (
     <div className="gastos-container">
       <Sidebar activePage="Gastos" />
@@ -182,6 +204,8 @@ export const Gastos = () => {
             setIsModalOpen(false)
           }}
           onConfirm={handleAddNewExpense}
+          onDelete={handleDeleteExpense}
+          gasto={formData}
         />
       )}
       {showToast && <ToastNotification type="ok" text={toastMessage} />}
@@ -228,7 +252,14 @@ export const Gastos = () => {
             </div>
             {expenses.map((expense) => {
               return (
-                <div className="line" key={expense.expenseId}>
+                <div
+                  className="line"
+                  key={expense.expenseId}
+                  onClick={() => {
+                    setFormData(expense)
+                    setIsModalOpen(true)
+                  }}
+                >
                   <div className="col1">
                     <input
                       type="checkbox"
