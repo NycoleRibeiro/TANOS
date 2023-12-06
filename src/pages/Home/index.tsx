@@ -11,38 +11,17 @@ import projectIcon from '../../assets/images/table-add.svg'
 import clientIcon from '../../assets/images/user-add-outlined.svg'
 import { Header } from '../../components/header'
 import { Sidebar } from '../../components/sidebar'
+import { ProjectCard } from '../Projetos/projectCard'
 
 export const Home = () => {
-  const navigate = useNavigate()
-
   const user = getUserData()
-  const [naoIniciados, setNaoIniciados] = useState<Project[]>([])
+  const [emAndamento, setEmAndamento] = useState<Project[]>([])
 
   useEffect(() => {
     if (user) {
-      setNaoIniciados(getProjects(user.userId, 'Não iniciado'))
+      setEmAndamento(getProjects(user.userId, 'Em andamento'))
     }
   }, [user])
-
-  const renderProjectCard = (project: Project) => (
-    <div
-      className="card"
-      key={project.projectId}
-      onClick={() => {
-        navigate(`/projeto/${project.projectId}`)
-      }}
-    >
-      <div className="title">{project.titulo}</div>
-      <div className="price">
-        R${' '}
-        {project.gastos.reduce((acc, curr) => acc + curr.valor, 0).toFixed(2)}
-      </div>
-      <div className="info">
-        <span className="date">{project.dataEntrega}</span>
-        <span className="client">Cliente ID: {project.clienteId}</span>
-      </div>
-    </div>
-  )
 
   return (
     <div className="dashboard-container">
@@ -50,10 +29,12 @@ export const Home = () => {
       <div className="content">
         <Header path={[{ label: 'Início', path: '/home' }]} />
         <div className="body">
-        <div className="projetosAndamento">
+          <div className="projetosAndamento">
             <div className="header">Projetos em andamento</div>
             <div className="projetosCards">
-              {naoIniciados.map(renderProjectCard)}
+              {emAndamento.map((project) => (
+                <ProjectCard key={project.projectId} project={project} />
+              ))}
             </div>
           </div>
           <div className="atalhos">
@@ -76,7 +57,6 @@ export const Home = () => {
               <div className="name">Criar projeto</div>
             </div>
           </div>
-          
         </div>
       </div>
     </div>

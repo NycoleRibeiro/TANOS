@@ -68,7 +68,7 @@ export const Gastos = () => {
   const [selectedYear, setSelectedYear] = useState(currentYear)
 
   useEffect(() => {
-    if (toastMessage) {
+    if (toastMessage !== '') {
       setShowToast(true)
       setTimeout(() => {
         setShowToast(false)

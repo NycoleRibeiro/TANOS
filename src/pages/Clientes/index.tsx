@@ -2,14 +2,14 @@ import { ChangeEvent, useEffect, useState } from 'react'
 
 import './style.sass'
 
-import deleteIcon from '../../assets/images/delete.svg'
 import { FilledButton } from '../../components/buttons/filledButton'
 import { Header } from '../../components/header'
-import { AvatarInput } from '../../components/inputs/avatar'
-import { Input } from '../../components/inputs/input'
+
 import { SearchInput } from '../../components/inputs/search'
 import { Sidebar } from '../../components/sidebar'
 import { ToastNotification } from '../../components/toast-notification'
+import { Client } from '../../database/Types'
+import { ClientModal } from './clientModal'
 
 import {
   getClients,
@@ -27,17 +27,6 @@ import phoneIcon from '../../assets/images/phone.svg'
 import siteIcon from '../../assets/images/site.svg'
 
 export const Clientes = () => {
-  interface Client {
-    nome: string
-    instagram: string
-    facebook: string
-    site: string
-    linkedin: string
-    email: string
-    telefone: string
-    clientId: number
-  }
-
   const user = getUserData() // Obtém o usuário atual
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -52,8 +41,19 @@ export const Clientes = () => {
     clientId: 0,
   })
   const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
   const [clients, setClients] = useState(user ? getClients(user.userId) : [])
   const [searchTerm, setSearchTerm] = useState('')
+
+  useEffect(() => {
+    if (toastMessage !== '') {
+      setShowToast(true)
+      setTimeout(() => {
+        setShowToast(false)
+        setToastMessage('')
+      }, 5000)
+    }
+  }, [toastMessage])
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term)
@@ -63,24 +63,16 @@ export const Clientes = () => {
     client.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
-  }
-
-  const handleSave = () => {
+  const handleSave = (newClientData: Client) => {
     // Verifica se todos os campos obrigatórios estão preenchidos
-    if (formData.nome && formData.email && formData.telefone) {
+    if (newClientData.nome && newClientData.email && newClientData.telefone) {
       if (user) {
-        if (formData.clientId === 0) {
+        if (newClientData.clientId === 0) {
           // Cria um novo cliente
           const newClientId = getNextClientId(clients)
 
           // Define o novo clientId seguindo formData
-          const newClient = { ...formData, clientId: newClientId }
+          const newClient = { ...newClientData, clientId: newClientId }
 
           // Adiciona o novo cliente
           insertClient(user.userId, newClient)
@@ -92,8 +84,8 @@ export const Clientes = () => {
           setClients(updatedClients)
         } else {
           // Atualiza um cliente
-          updateClient(user.userId, formData)
-          console.log('Cliente atualizado com sucesso: ', formData)
+          updateClient(user.userId, newClientData)
+          console.log('Cliente atualizado com sucesso: ', newClientData)
           setIsModalOpen(false)
 
           // Atualize manualmente o estado da lista de clientes
@@ -145,6 +137,7 @@ export const Clientes = () => {
       const updatedClients = getClients(user.userId)
       setClients(updatedClients)
       setIsModalOpen(false)
+      setToastMessage('Cliente excluído com sucesso')
     }
   }
 
@@ -159,21 +152,13 @@ export const Clientes = () => {
 
   const handleContactClick = (text: string) => {
     copyTextToClipboard(text)
-    setShowToast(true)
-    setTimeout(() => {
-      setShowToast(false)
-    }, 5000) // 5 segundos
+    setToastMessage('Valor copiado para área de transferência')
   }
 
   return (
     <div className="clientes-container">
       <Sidebar activePage="Clientes" />
-      {showToast && (
-        <ToastNotification
-          type="ok"
-          text="Valor copiado para área de transferência"
-        />
-      )}
+      {showToast && <ToastNotification type="ok" text={toastMessage} />}
 
       <div className="content">
         <Header path={[{ label: 'Clientes', path: '/clientes' }]} />
@@ -296,97 +281,12 @@ export const Clientes = () => {
 
         {/* Modal */}
         {isModalOpen && (
-          <div className="add-contact">
-            <div className="modal">
-              <div className="header">Dados do cliente</div>
-
-              <div className="content">
-                {/* <AvatarInput /> */}
-                <div className="line">
-                  <Input
-                    label="Nome"
-                    placeholder="Nome do cliente"
-                    name="nome"
-                    value={formData.nome}
-                    onChange={handleInputChange}
-                  />
-
-                  {formData.clientId !== 0 && (
-                    <div className="delButton" onClick={deleteClient}>
-                      <img src={deleteIcon} alt="" />
-                    </div>
-                  )}
-                </div>
-                <Input
-                  label="Email"
-                  placeholder="Email do cliente"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                />
-                <Input
-                  label="Telefone"
-                  placeholder="+55 99 99999-9999"
-                  name="telefone"
-                  value={formData.telefone}
-                  onChange={handleInputChange}
-                />
-
-                <div className="socialmedia">
-                  <p>Instagram</p>
-                  <Input
-                    label="Link"
-                    placeholder="https://"
-                    name="instagram"
-                    value={formData.instagram}
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div className="socialmedia">
-                  <p>Facebook</p>
-                  <Input
-                    label="Link"
-                    placeholder="https://"
-                    name="facebook"
-                    onChange={handleInputChange}
-                    value={formData.facebook}
-                  />
-                </div>
-
-                <div className="socialmedia">
-                  <p>Linkedin</p>
-                  <Input
-                    label="Link"
-                    placeholder="https://"
-                    name="linkedin"
-                    value={formData.linkedin}
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div className="socialmedia">
-                  <p>Site</p>
-                  <Input
-                    label="Link"
-                    placeholder="https://"
-                    name="site"
-                    value={formData.site}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-
-              <div className="buttons">
-                <FilledButton
-                  text="Cancelar"
-                  size="100px"
-                  onClick={() => setIsModalOpen(false)}
-                />
-                <FilledButton text="Salvar" size="100px" onClick={handleSave} />
-              </div>
-            </div>
-          </div>
+          <ClientModal
+            client={formData}
+            onSave={handleSave}
+            onClose={() => setIsModalOpen(false)}
+            onDelete={deleteClient}
+          />
         )}
       </div>
     </div>

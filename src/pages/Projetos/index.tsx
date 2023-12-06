@@ -1,40 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './style.sass'
 
 import { Header } from '../../components/header'
 import { Sidebar } from '../../components/sidebar'
+import { ProjectCard } from './projectCard'
 
-import { useNavigate } from 'react-router-dom'
 import { getProjects } from '../../database/Projects'
 import { getUserData } from '../../loggedUser'
-
-interface Expense {
-  titulo: string
-  tipo: 'Projeto' | 'Cliente'
-  valor: number
-}
-
-interface ToDoItem {
-  check: boolean
-  descricao: string
-}
-
-interface Project {
-  projectId: number
-  titulo: string
-  descricao: string
-  status: 'Não iniciado' | 'Em andamento' | 'Concluído'
-  dataPedido: string
-  dataEntrega: string
-  clienteId: number
-  servicosId: number[]
-  gastos: Expense[]
-  toDoList: ToDoItem[]
-}
+import { Project } from '../../database/Types'
 
 export const Projetos = () => {
-  const navigate = useNavigate()
-
   const user = getUserData()
   const [naoIniciados, setNaoIniciados] = useState<Project[]>([])
   const [emAndamento, setEmAndamento] = useState<Project[]>([])
@@ -48,26 +23,6 @@ export const Projetos = () => {
     }
   }, [user])
 
-  const renderProjectCard = (project: Project) => (
-    <div
-      className="card"
-      key={project.projectId}
-      onClick={() => {
-        navigate(`/projeto/${project.projectId}`)
-      }}
-    >
-      <div className="title">{project.titulo}</div>
-      <div className="price">
-        R${' '}
-        {project.gastos.reduce((acc, curr) => acc + curr.valor, 0).toFixed(2)}
-      </div>
-      <div className="info">
-        <span className="date">{project.dataEntrega}</span>
-        <span className="client">Cliente ID: {project.clienteId}</span>
-      </div>
-    </div>
-  )
-
   return (
     <div className="projetos-container">
       <Sidebar activePage="Projetos" />
@@ -78,21 +33,27 @@ export const Projetos = () => {
             <div className="header">Não iniciado</div>
             <div className="cards">
               <div className="buttonCreateProject">Criar novo projeto</div>
-              {naoIniciados.map(renderProjectCard)}
+              {naoIniciados.map((project) => (
+                <ProjectCard key={project.projectId} project={project} />
+              ))}
             </div>
           </div>
           <div className="quadro">
             <div className="header">Em andamento</div>
             <div className="cards">
               <div className="buttonCreateProject">Criar novo projeto</div>
-              {emAndamento.map(renderProjectCard)}
+              {emAndamento.map((project) => (
+                <ProjectCard key={project.projectId} project={project} />
+              ))}
             </div>
           </div>
           <div className="quadro">
             <div className="header">Concluído</div>
             <div className="cards">
               <div className="buttonCreateProject">Criar novo projeto</div>
-              {concluidos.map(renderProjectCard)}
+              {concluidos.map((project) => (
+                <ProjectCard key={project.projectId} project={project} />
+              ))}
             </div>
           </div>
         </div>
