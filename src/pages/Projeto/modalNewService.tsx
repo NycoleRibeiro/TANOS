@@ -9,11 +9,13 @@ import './styleModal.sass'
 interface ModalNewServiceProps {
   onClose: () => void
   onConfirm: (service: Service) => void
+  existingServices: Service[]
 }
 
 export const ModalNewService: React.FC<ModalNewServiceProps> = ({
   onClose,
   onConfirm,
+  existingServices,
 }) => {
   const user = getUserData()
   const [services, setServices] = useState<Service[]>([])
@@ -30,20 +32,37 @@ export const ModalNewService: React.FC<ModalNewServiceProps> = ({
     }
   }, [user])
 
+  useEffect(() => {
+    if (user) {
+      let fetchedServices = getServices(user.userId) // Obtenha a lista total de serviços
+
+      // Filtre os serviços que já estão na lista do projeto
+      fetchedServices = fetchedServices.filter(
+        (service) =>
+          !existingServices.find((s) => s.serviceId === service.serviceId),
+      )
+
+      setServices(fetchedServices)
+    }
+  }, [user, existingServices])
+
   const handleConfirm = () => {
     if (selectedService) {
+      let serviceToConfirm = selectedService
+
+      // Se o valor do serviço não for fixo e o usuário digitou um valor, atualize o serviço com esse valor
       if (!selectedService.valorFixo && !isNaN(parseFloat(inputValue))) {
-        // Confirma com o valor inserido pelo usuário
-        const updatedService = {
+        serviceToConfirm = {
           ...selectedService,
           valor: parseFloat(inputValue),
         }
-        onConfirm(updatedService)
-      } else {
-        // Confirma imediatamente se o valor for fixo
-        onConfirm(selectedService)
       }
-      setIsValueInputOpen(false)
+
+      onConfirm(serviceToConfirm) // Confirma o serviço selecionado (com ou sem valor atualizado)
+      setIsValueInputOpen(false) // Fecha o input de valor
+      setSelectedService(null) // Reseta o serviço selecionado
+      setInputValue('') // Limpa o campo de valor
+      onClose()
     }
   }
 
@@ -57,8 +76,11 @@ export const ModalNewService: React.FC<ModalNewServiceProps> = ({
 
   const handleServiceSelect = (service: Service) => {
     setSelectedService(service)
-    if (!service.valorFixo) {
-      setIsValueInputOpen(true) // Abre o input para definir o valor
+    if (service.valorFixo) {
+      setInputValue('')
+      setIsValueInputOpen(false)
+    } else {
+      setIsValueInputOpen(true)
     }
   }
 
@@ -99,11 +121,7 @@ export const ModalNewService: React.FC<ModalNewServiceProps> = ({
               placeholder="Digite o valor do serviço"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-            />
-            <FilledButton
-              text="Confirmar Valor"
-              size="100px"
-              onClick={handleConfirm}
+              className="inputNewValue"
             />
           </div>
         )}

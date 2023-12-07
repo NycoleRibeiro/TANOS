@@ -65,7 +65,7 @@ export interface Project {
   dataPedido: string
   dataEntrega: string
   clienteId: number
-  servicosId: number[]
+  servicos: Service[]
   gastos: Expense[]
   toDoList: ToDoItem[]
 }

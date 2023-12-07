@@ -1,4 +1,4 @@
-import { Expense, ToDoItem, Project, UserProjects } from './Types'
+import { Expense, Project, ToDoItem, UserProjects } from './Types'
 
 const listaDeProjetos: UserProjects[] = [
   {
@@ -13,7 +13,24 @@ const listaDeProjetos: UserProjects[] = [
         dataPedido: '15/04/2023',
         dataEntrega: '30/06/2023',
         clienteId: 1,
-        servicosId: [1, 2],
+        servicos: [
+          {
+            nome: 'Capa para Facebook',
+            descricao: 'Criação do design de uma capa para o Facebook',
+            categoria: 'Design Gráfico',
+            valor: 40.0,
+            valorFixo: true,
+            serviceId: 1,
+          },
+          {
+            nome: 'Logo Design',
+            descricao: 'Design de logotipo profissional',
+            categoria: 'Design Gráfico',
+            valor: 60.0,
+            valorFixo: true,
+            serviceId: 2,
+          },
+        ],
         gastos: [
           { titulo: 'Licença de Imagens', tipo: 'Projeto', valor: 150.0 },
           { titulo: 'Hospedagem Anual', tipo: 'Cliente', valor: 300.0 },
@@ -32,7 +49,24 @@ const listaDeProjetos: UserProjects[] = [
         dataPedido: '01/05/2023',
         dataEntrega: '01/08/2023',
         clienteId: 2,
-        servicosId: [3, 4],
+        servicos: [
+          {
+            nome: 'Capa para Facebook',
+            descricao: 'Criação do design de uma capa para o Facebook',
+            categoria: 'Design Gráfico',
+            valor: 40.0,
+            valorFixo: true,
+            serviceId: 1,
+          },
+          {
+            nome: 'Logo Design',
+            descricao: 'Design de logotipo profissional',
+            categoria: 'Design Gráfico',
+            valor: 60.0,
+            valorFixo: true,
+            serviceId: 2,
+          },
+        ],
         gastos: [
           { titulo: 'Anúncios Facebook', tipo: 'Projeto', valor: 500.0 },
           { titulo: 'Software de SEO', tipo: 'Projeto', valor: 200.0 },
@@ -56,7 +90,24 @@ const listaDeProjetos: UserProjects[] = [
         dataPedido: '10/03/2023',
         dataEntrega: '20/05/2023',
         clienteId: 3,
-        servicosId: [5],
+        servicos: [
+          {
+            nome: 'Capa para Facebook',
+            descricao: 'Criação do design de uma capa para o Facebook',
+            categoria: 'Design Gráfico',
+            valor: 40.0,
+            valorFixo: true,
+            serviceId: 1,
+          },
+          {
+            nome: 'Logo Design',
+            descricao: 'Design de logotipo profissional',
+            categoria: 'Design Gráfico',
+            valor: 60.0,
+            valorFixo: true,
+            serviceId: 2,
+          },
+        ],
         gastos: [
           { titulo: 'Licença de Software', tipo: 'Projeto', valor: 1000.0 },
           { titulo: 'Serviços de Cloud', tipo: 'Cliente', valor: 1500.0 },
@@ -77,7 +128,24 @@ const listaDeProjetos: UserProjects[] = [
         dataPedido: '05/07/2023',
         dataEntrega: '15/10/2023',
         clienteId: 4,
-        servicosId: [6, 7],
+        servicos: [
+          {
+            nome: 'Capa para Facebook',
+            descricao: 'Criação do design de uma capa para o Facebook',
+            categoria: 'Design Gráfico',
+            valor: 40.0,
+            valorFixo: true,
+            serviceId: 1,
+          },
+          {
+            nome: 'Logo Design',
+            descricao: 'Design de logotipo profissional',
+            categoria: 'Design Gráfico',
+            valor: 60.0,
+            valorFixo: true,
+            serviceId: 2,
+          },
+        ],
         gastos: [
           { titulo: 'Pesquisa de Mercado', tipo: 'Projeto', valor: 300.0 },
           { titulo: 'Consultoria de Branding', tipo: 'Cliente', valor: 1500.0 },

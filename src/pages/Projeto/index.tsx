@@ -84,10 +84,7 @@ export const Projeto = () => {
         if (fetchedClient) {
           setClient(fetchedClient)
         }
-        const fetchedServices = getServicesById(
-          user.userId,
-          fetchedProject.servicosId,
-        )
+        const fetchedServices = fetchedProject.servicos
         if (fetchedServices) {
           setServices(fetchedServices)
         }
@@ -240,19 +237,20 @@ export const Projeto = () => {
   }
 
   const handleAddService = (newService: Service) => {
+    // Adiciona o novo serviço à lista de serviços do projeto
     const updatedServices = [...services, newService]
     setServices(updatedServices)
 
-    const updatedServiceIds = updatedServices.map(
-      (service) => service.serviceId,
-    )
-    const updatedProject = { ...projeto, servicosId: updatedServiceIds }
+    const updatedProject = { ...projeto, servicos: updatedServices }
 
+    // Chama a função para atualizar o projeto no "banco de dados"
     const updateResult = updateProject(user.userId, updatedProject)
     if (updateResult === 'success') {
       setToastMessage('Serviço adicionado com sucesso!')
+      setShowToast(true)
     } else {
       setToastMessage('Erro ao adicionar serviço, tente novamente mais tarde.')
+      setShowToast(true)
     }
   }
 
@@ -272,6 +270,7 @@ export const Projeto = () => {
         <ModalNewService
           onClose={() => setIsModalServicesOpen(false)}
           onConfirm={handleAddService}
+          existingServices={projeto.servicos}
         />
       )}
 
