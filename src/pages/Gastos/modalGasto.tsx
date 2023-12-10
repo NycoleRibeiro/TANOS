@@ -64,38 +64,28 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
     }
   }, [toastMessage])
 
-  const handleDescricaoChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setDescricao(event.target.value)
+  const handleDescricaoChange = (value: string) => {
+    setDescricao(value)
   }
 
-  const handlePagamentoDiaChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setPagamentoDia(event.target.value)
+  const handleValorChange = (value: string) => {
+    setValor(value)
   }
 
-  const handleValorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValor(event.target.value)
+  const handlePagamentoDiaChange = (value: string) => {
+    setPagamentoDia(value)
   }
 
-  const handlePagamentoMesChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setPagamentoMes(event.target.value)
+  const handlePagamentoMesChange = (value: string) => {
+    setPagamentoMes(value)
   }
 
-  const handlePagamentoAnoChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setPagamentoAno(event.target.value)
+  const handlePagamentoAnoChange = (value: string) => {
+    setPagamentoAno(value)
   }
 
-  const handleCategoriaChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setCategoria(event.target.value)
+  const handleCategoriaChange = (value: string) => {
+    setCategoria(value)
   }
 
   const handleFormaPagamentoChange = (selectedItem: string) => {
@@ -216,7 +206,10 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
             {gasto.expenseId !== 0 && (
               <div
                 className="delButton"
-                onClick={() => onDelete(gasto.expenseId)}
+                onClick={() => {
+                  clearFormData()
+                  onDelete(gasto.expenseId)
+                }}
               >
                 <img src={deleteIcon} alt="" />
               </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import './style.sass'
 
 import PlusIcon from '../../assets/images/add.svg'
@@ -25,6 +25,7 @@ import { getClientById } from '../../database/Clients'
 import {
   getProjectById,
   insertProject,
+  removeProject,
   updateProject,
   updateProjectExpenses,
 } from '../../database/Projects'
@@ -33,11 +34,13 @@ import { getUserData } from '../../loggedUser'
 import { FilledButton } from '../../components/buttons/filledButton/index'
 import { Client, Expense, Project, Service } from '../../database/Types'
 import { ModalNewService } from './modalNewService'
+import { ModalConfirm } from './modalConfirm'
 
 export const Projeto = () => {
   const { projectId } = useParams()
   const projectIdNumber = projectId ? parseInt(projectId, 10) : 0
   const user = getUserData()
+  const navigate = useNavigate()
 
   const initialProjectState: Project = {
     projectId: projectIdNumber,
@@ -73,11 +76,14 @@ export const Projeto = () => {
   const [isModalGastosOpen, setIsModalGastosOpen] = useState(false)
   const [isModalClientesOpen, setIsModalClientesOpen] = useState(false)
   const [isModalServicesOpen, setIsModalServicesOpen] = useState(false)
+  const [isModalConfirmOpen, setIsModalConfirmOpen] = useState(false)
 
   const [totalServicos, setTotalServicos] = useState(0)
   const [totalGastosProjeto, setTotalGastosProjeto] = useState(0)
   const [totalCliente, setTotalCliente] = useState(0)
   const [totalLucro, setTotalLucro] = useState(0)
+
+  let logMessage = ''
 
   useEffect(() => {
     if (user && projectIdNumber !== null) {
@@ -147,11 +153,11 @@ export const Projeto = () => {
     if (newStatus !== '') {
       const updatedProject = { ...projeto, status: newStatus }
       setProjeto(updatedProject)
-      updateProject(user.userId, updatedProject)
       if (newStatus === 'Concluído') {
         // Atualiza o histórico
-        const logMessage = `O Projeto ${projeto.titulo} foi concluído!`
-        addToHistory(user.userId, logMessage)
+        logMessage = `O Projeto ${projeto.titulo} foi concluído!`
+      } else {
+        logMessage = ''
       }
     }
   }
@@ -159,7 +165,6 @@ export const Projeto = () => {
   const handleInputChange = (value: string, fieldName: string) => {
     const updatedProject = { ...projeto, [fieldName]: value }
     setProjeto(updatedProject)
-    updateProject(user.userId, updatedProject)
   }
 
   const handleDescriptionChange = (
@@ -168,7 +173,6 @@ export const Projeto = () => {
     const { name, value } = event.target
     const updatedProject = { ...projeto, [name]: value }
     setProjeto(updatedProject)
-    updateProject(user.userId, updatedProject)
   }
 
   const copyTextToClipboard = (text: string) => {
@@ -186,14 +190,6 @@ export const Projeto = () => {
     setToastMessage('Valor copiado para área de transferência')
   }
 
-  const openModalGastos = () => {
-    setIsModalGastosOpen(true)
-  }
-
-  const closeModalGastos = () => {
-    setIsModalGastosOpen(false)
-  }
-
   const handleNewGasto = (novoGasto: Expense) => {
     // Validação básica
     if (!novoGasto.titulo || novoGasto.valor <= 0) {
@@ -202,63 +198,21 @@ export const Projeto = () => {
       )
       return
     }
-    const updatedGastos = [...projeto.gastos, novoGasto]
-    const result = updateProjectExpenses(
-      user.userId,
-      projeto.projectId,
-      updatedGastos,
-    )
-    if (result === 'success') {
-      setGastos((gastosAtual) => [...gastosAtual, novoGasto])
-      setToastMessage('Gasto adicionado com sucesso!')
-      closeModalGastos()
-    } else {
-      setToastMessage('Erro ao adicionar gasto, tente novamente mais tarde!')
-    }
+    setGastos((gastosAtual) => [...gastosAtual, novoGasto])
+    setIsModalGastosOpen(false)
   }
 
   const handleRemoveGasto = (gastoTitulo: string) => {
-    const updatedGastos = projeto.gastos.filter(
-      (gasto) => gasto.titulo !== gastoTitulo,
-    )
-
-    const result = updateProjectExpenses(
-      user.userId,
-      projeto.projectId,
-      updatedGastos,
-    )
-
-    if (result === 'success') {
-      setGastos(updatedGastos)
-    } else {
-      setToastMessage('Erro ao remover gasto, tente novamente mais tarde!')
-    }
-  }
-
-  const openModalClientes = () => {
-    setIsModalClientesOpen(true)
-  }
-
-  // Função para fechar o modal de clientes
-  const closeModalClientes = () => {
-    setIsModalClientesOpen(false)
+    const updatedGastos = gastos.filter((gasto) => gasto.titulo !== gastoTitulo)
+    setGastos(updatedGastos)
   }
 
   const handleClientSelect = (selectedClient: Client) => {
     const updatedProject = { ...projeto, clienteId: selectedClient.clientId }
     setProjeto(updatedProject)
-    const updateResult = updateProject(user.userId, updatedProject)
-    if (updateResult === 'success') {
-      // Se a atualização for bem-sucedida, mostre um toast e feche o modal
-      setClient(selectedClient)
-      closeModalClientes()
-      setToastMessage('Cliente alterado com sucesso!')
-      setShowToast(true)
-    } else {
-      // Se a atualização falhar, mostre um toast com erro
-      setToastMessage('Erro ao atualizar cliente, tente novamente mais tarde.')
-      setShowToast(true)
-    }
+    setClient(selectedClient)
+    setIsModalClientesOpen(false)
+    setToastMessage('Cliente alterado com sucesso!')
   }
 
   const handleRemoveService = (serviceId: number) => {
@@ -266,32 +220,45 @@ export const Projeto = () => {
       (service) => service.serviceId !== serviceId,
     )
     const updatedProject = { ...projeto, servicos: updatedServices }
-    const updateResult = updateProject(user.userId, updatedProject)
-
-    if (updateResult === 'success') {
-      setProjeto(updatedProject) // Atualiza o estado do projeto
-      setServices(updatedServices) // Atualiza o estado dos serviços
-      setToastMessage('Serviço removido com sucesso!')
-      setShowToast(true)
-    } else {
-      setToastMessage('Erro ao remover serviço, tente novamente mais tarde.')
-      setShowToast(true)
-    }
+    setProjeto(updatedProject) // Atualiza o estado do projeto
+    setServices(updatedServices) // Atualiza o estado dos serviços
   }
 
   const handleAddService = (newService: Service) => {
     const updatedServices = [...services, newService]
     const updatedProject = { ...projeto, servicos: updatedServices }
-    const updateResult = updateProject(user.userId, updatedProject)
+    setProjeto(updatedProject) // Atualiza o estado do projeto
+    setServices(updatedServices) // Atualiza o estado dos serviços
+  }
 
-    if (updateResult === 'success') {
-      setProjeto(updatedProject) // Atualiza o estado do projeto
-      setServices(updatedServices) // Atualiza o estado dos serviços
-      setToastMessage('Serviço adicionado com sucesso!')
-      setShowToast(true)
+  const handleSaveClick = () => {
+    const result = updateProject(user.userId, projeto)
+    const resultGastos = updateProjectExpenses(
+      user.userId,
+      projeto.projectId,
+      gastos,
+    )
+    if (result === 'success') {
+      if (resultGastos === 'success') {
+        setToastMessage('Projeto salvo com sucesso!')
+      } else {
+        setToastMessage('Erro ao salvar gastos')
+      }
+      if (logMessage !== '') {
+        addToHistory(user.userId, logMessage)
+      }
     } else {
-      setToastMessage('Erro ao adicionar serviço, tente novamente mais tarde.')
-      setShowToast(true)
+      setToastMessage('Erro ao salvar o projeto.')
+    }
+  }
+
+  const handleDeleteProject = () => {
+    const result = removeProject(user.userId, projeto.projectId)
+    if (result === 'success') {
+      setToastMessage('Projeto excluído com sucesso!')
+      navigate('/projetos')
+    } else {
+      setToastMessage('Erro ao excluir o projeto.')
     }
   }
 
@@ -299,11 +266,18 @@ export const Projeto = () => {
     <div className="projeto-container">
       {showToast && <ToastNotification type="ok" text={toastMessage} />}
       {isModalGastosOpen && (
-        <ModalNewGasto onClose={closeModalGastos} onConfirm={handleNewGasto} />
+        <ModalNewGasto
+          onClose={() => {
+            setIsModalGastosOpen(false)
+          }}
+          onConfirm={handleNewGasto}
+        />
       )}
       {isModalClientesOpen && (
         <ModalNewClient
-          onClose={closeModalClientes}
+          onClose={() => {
+            setIsModalClientesOpen(false)
+          }}
           onConfirm={handleClientSelect}
         />
       )}
@@ -312,6 +286,14 @@ export const Projeto = () => {
           onClose={() => setIsModalServicesOpen(false)}
           onConfirm={handleAddService}
           existingServices={projeto.servicos}
+        />
+      )}
+      {isModalConfirmOpen && (
+        <ModalConfirm
+          onClose={() => {
+            setIsModalConfirmOpen(false)
+          }}
+          onConfirm={handleDeleteProject}
         />
       )}
 
@@ -359,7 +341,12 @@ export const Projeto = () => {
             <div className="clientBox">
               <div className="header">
                 <div className="title">Cliente</div>
-                <div className="addButton" onClick={openModalClientes}>
+                <div
+                  className="addButton"
+                  onClick={() => {
+                    setIsModalClientesOpen(true)
+                  }}
+                >
                   <img src={PlusIcon} alt="" />
                 </div>
               </div>
@@ -497,7 +484,12 @@ export const Projeto = () => {
             <div className="gastosBox">
               <div className="header">
                 <div className="title">Gastos</div>
-                <div className="addButton" onClick={openModalGastos}>
+                <div
+                  className="addButton"
+                  onClick={() => {
+                    setIsModalGastosOpen(true)
+                  }}
+                >
                   <img src={PlusIcon} alt="" />
                 </div>
               </div>
@@ -551,15 +543,15 @@ export const Projeto = () => {
                 icon={deleteIcon}
                 size="40px"
                 color="#DC362E"
-                onClick={() => {}}
+                onClick={() => {
+                  setIsModalConfirmOpen(true)
+                }}
               />
               <FilledButton
-                text="Cancelar"
+                text="Salvar"
                 size="120px"
-                color="#7A7289"
-                onClick={() => {}}
+                onClick={handleSaveClick}
               />
-              <FilledButton text="Salvar" size="120px" onClick={() => {}} />
             </div>
           </div>
         </div>

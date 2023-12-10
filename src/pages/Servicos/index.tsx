@@ -38,6 +38,12 @@ export const Servicos = () => {
   const [showToast, setShowToast] = useState(false)
   const [services, setServices] = useState(user ? getServices(user.userId) : [])
   const [searchTerm, setSearchTerm] = useState('')
+  const [errorMessages, setErrorMessages] = useState({
+    nome: '',
+    descricao: '',
+    categoria: '',
+    valor: '',
+  })
 
   useEffect(() => {
     if (toastMessage !== '') {
@@ -62,66 +68,75 @@ export const Servicos = () => {
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
 
-    // Verifica se o campo alterado é o 'valor' e se a string pode ser convertida para um número
-    if (name === 'valor' && !isNaN(Number(value))) {
-      setFormData({
-        ...formData,
-        [name]: Number(value), // Converte a string para número
-      })
+    if (name === 'valor') {
+      // Permite apenas números e vírgula
+      const valorFormatado = value.replace(/[^0-9,]/g, '')
+      setFormData({ ...formData, [name]: valorFormatado })
     } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      })
+      setFormData({ ...formData, [name]: value })
     }
   }
 
   const handleSave = () => {
-    // Verifica se todos os campos obrigatórios estão preenchidos
-    if (
-      formData.nome &&
-      formData.descricao &&
-      formData.categoria &&
-      formData.valor !== 0
-    ) {
-      if (user) {
-        if (formData.serviceId === 0) {
-          // Cria um novo serviço
-          const newServiceId = getNextServiceId(services)
+    let isValid = true
+    const newErrorMessages = {
+      nome: '',
+      descricao: '',
+      categoria: '',
+      valor: '',
+    }
 
-          // Define o novo serviceId seguindo formData
-          const newService = { ...formData, serviceId: newServiceId }
+    if (!formData.nome) {
+      newErrorMessages.nome = 'Nome é obrigatório.'
+      isValid = false
+    }
+    if (!formData.descricao) {
+      newErrorMessages.descricao = 'Descrição é obrigatória.'
+      isValid = false
+    }
+    if (!formData.categoria) {
+      newErrorMessages.categoria = 'Categoria é obrigatória.'
+      isValid = false
+    }
+    if (formData.valor <= 0) {
+      newErrorMessages.valor = 'Valor deve ser maior que zero.'
+      isValid = false
+    }
 
-          // Adiciona o novo serviço
-          insertService(user.userId, newService)
-          console.log('Novo serviço adicionado com sucesso: ', newService)
-          setIsModalOpen(false)
+    setErrorMessages(newErrorMessages)
 
-          // Cria um log
-          const logMessage = 'Novo serviço criado no sistema'
-          addToHistory(user.userId, logMessage)
+    if (!isValid) {
+      return // Interrompe a execução se houver erro
+    }
 
-          // Atualize manualmente o estado da lista de serviços
-          const updatedServices = getServices(user.userId)
-          setServices(updatedServices)
+    // Limpa o valor de qualquer formatação para salvar como número
+    const valorLimpo = parseFloat(formData.valor.replace(',', '.'))
+    const dadosParaSalvar = {
+      ...formData,
+      valor: valorLimpo,
+    }
 
-          setToastMessage('Serviço criado com sucesso')
-        } else {
-          // Atualiza um serviço
-          updateService(user.userId, formData)
-          console.log('Serviço atualizado com sucesso: ', formData)
-          setIsModalOpen(false)
-
-          // Atualize manualmente o estado da lista de serviços
-          const updatedServices = getServices(user.userId)
-          setServices(updatedServices)
-
-          setToastMessage('Dados salvos com sucesso')
-        }
+    // Implemente a lógica de salvamento aqui, por exemplo:
+    if (user) {
+      if (formData.serviceId === 0) {
+        // Cria um novo serviço e o adiciona
+        const newServiceId = getNextServiceId(services)
+        const newService = { ...dadosParaSalvar, serviceId: newServiceId }
+        insertService(user.userId, newService)
+        setIsModalOpen(false)
+        setToastMessage('Serviço criado com sucesso')
       } else {
-        // O usuário não está autenticado, faça algo apropriado aqui
-        console.error('Usuário não autenticado.')
+        // Atualiza um serviço existente
+        updateService(user.userId, dadosParaSalvar)
+        setIsModalOpen(false)
+        setToastMessage('Serviço atualizado com sucesso')
       }
+
+      // Atualize a lista de serviços
+      const updatedServices = getServices(user.userId)
+      setServices(updatedServices)
+    } else {
+      setToastMessage('Erro: usuário não autenticado.')
     }
   }
 
@@ -163,6 +178,28 @@ export const Servicos = () => {
       setIsModalOpen(false)
       setToastMessage('Serviço removido com sucesso')
     }
+  }
+
+  const handleValorChange = (event: ChangeEvent<HTMLInputElement>) => {
+    let valor = event.target.value
+
+    // Remove caracteres que não são números ou vírgula
+    valor = valor.replace(/[^0-9,]/g, '')
+
+    // Substitui a vírgula por ponto para conversão para número
+    const valorNumerico = parseFloat(valor.replace(',', '.'))
+
+    // Verifica se o valor é um número válido
+    if (!isNaN(valorNumerico)) {
+      // Limita a duas casas decimais e converte para formato de moeda
+      valor = valorNumerico.toFixed(2).replace('.', ',')
+    }
+
+    // Atualiza o estado com o valor formatado
+    setFormData({
+      ...formData,
+      valor,
+    })
   }
 
   return (
@@ -226,6 +263,9 @@ export const Servicos = () => {
                     </div>
                   )}
                 </div>
+                {errorMessages.nome && (
+                  <div className="error-message">{errorMessages.nome}</div>
+                )}
                 <Input
                   label="Descrição"
                   placeholder="Descrição do serviço"
@@ -233,6 +273,9 @@ export const Servicos = () => {
                   value={formData.descricao}
                   onChange={handleInputChange}
                 />
+                {errorMessages.descricao && (
+                  <div className="error-message">{errorMessages.descricao}</div>
+                )}
                 <Input
                   label="Categoria"
                   placeholder="Categoria do serviço"
@@ -240,6 +283,9 @@ export const Servicos = () => {
                   value={formData.categoria}
                   onChange={handleInputChange}
                 />
+                {errorMessages.categoria && (
+                  <div className="error-message">{errorMessages.categoria}</div>
+                )}
                 <Input
                   label="Valor (R$)"
                   placeholder="Valor do serviço"
@@ -247,6 +293,9 @@ export const Servicos = () => {
                   value={formData.valor.toString()}
                   onChange={handleInputChange}
                 />
+                {errorMessages.valor && (
+                  <div className="error-message">{errorMessages.valor}</div>
+                )}
                 <label className="fixValue">
                   <input
                     type="checkbox"
