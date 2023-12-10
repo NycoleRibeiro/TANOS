@@ -18,14 +18,15 @@ import { Sidebar } from '../../components/sidebar'
 import { ToastNotification } from '../../components/toast-notification'
 import { ModalNewClient } from './modalNewCliente'
 import { ModalNewGasto } from './modalNewGasto'
+import { addToHistory } from '../../database/History'
 
 import { getClientById } from '../../database/Clients'
 import {
   getProjectById,
+  insertProject,
   updateProject,
   updateProjectExpenses,
 } from '../../database/Projects'
-import { getServicesById } from '../../database/Services'
 import { getUserData } from '../../loggedUser'
 
 import { Client, Expense, Project, Service } from '../../database/Types'
@@ -33,18 +34,18 @@ import { ModalNewService } from './modalNewService'
 
 export const Projeto = () => {
   const { projectId } = useParams()
-  const projectIdNumber = projectId ? parseInt(projectId, 10) : null
+  const projectIdNumber = projectId ? parseInt(projectId, 10) : 0
   const user = getUserData()
 
   const initialProjectState: Project = {
-    projectId: 0,
+    projectId: projectIdNumber,
     titulo: '',
     descricao: '',
     status: 'Não iniciado',
     dataPedido: '',
     dataEntrega: '',
-    clienteId: user ? user.userId : 0,
-    servicosId: [],
+    clienteId: 0,
+    servicos: [],
     gastos: [],
     toDoList: [],
   }
@@ -71,6 +72,11 @@ export const Projeto = () => {
   const [isModalClientesOpen, setIsModalClientesOpen] = useState(false)
   const [isModalServicesOpen, setIsModalServicesOpen] = useState(false)
 
+  const [totalServicos, setTotalServicos] = useState(0)
+  const [totalGastosProjeto, setTotalGastosProjeto] = useState(0)
+  const [totalCliente, setTotalCliente] = useState(0)
+  const [totalLucro, setTotalLucro] = useState(0)
+
   useEffect(() => {
     if (user && projectIdNumber !== null) {
       const fetchedProject = getProjectById(user.userId, projectIdNumber)
@@ -88,6 +94,9 @@ export const Projeto = () => {
         if (fetchedServices) {
           setServices(fetchedServices)
         }
+      } else {
+        insertProject(user.userId, initialProjectState)
+        setToastMessage('Novo projeto criado com sucesso')
       }
     }
   }, [user, projectIdNumber])
@@ -102,15 +111,54 @@ export const Projeto = () => {
     }
   }, [toastMessage])
 
+  useEffect(() => {
+    // Soma dos valores dos serviços
+    const totalServicos = services.reduce(
+      (acc, service) => acc + service.valor,
+      0,
+    )
+
+    // Soma dos gastos do projeto
+    const totalGastosProjeto = gastos
+      .filter((gasto) => gasto.tipo === 'Projeto')
+      .reduce((acc, gasto) => acc + gasto.valor, 0)
+
+    // Soma dos gastos do tipo cliente
+    const totalGastosCliente = gastos
+      .filter((gasto) => gasto.tipo === 'Cliente')
+      .reduce((acc, gasto) => acc + gasto.valor, 0)
+
+    // Total a ser cobrado do cliente
+    const totalCliente = totalServicos + totalGastosCliente
+
+    // Lucro (serviços menos gastos do tipo projeto)
+    const lucro = totalServicos - totalGastosProjeto
+
+    // Atualiza o estado aqui com os novos valores calculados
+    setTotalServicos(totalServicos)
+    setTotalGastosProjeto(totalGastosProjeto)
+    setTotalCliente(totalCliente)
+    setTotalLucro(lucro)
+  }, [services, gastos])
+
   const handleStatusChange = (newStatus: string) => {
-    const updatedProject = { ...projeto, status: newStatus }
-    setProjeto(updatedProject)
-    updateProject(user.userId, updatedProject)
+    if (newStatus !== '') {
+      const updatedProject = { ...projeto, status: newStatus }
+      setProjeto(updatedProject)
+      updateProject(user.userId, updatedProject)
+      if (newStatus === 'Concluído') {
+        // Atualiza o histórico
+        const logMessage = `O Projeto ${projeto.titulo} foi concluído!`
+        addToHistory(user.userId, logMessage)
+      }
+    }
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
-    setProjeto({ ...projeto, [name]: value })
+    const updatedProject = { ...projeto, [name]: value }
+    setProjeto(updatedProject)
+    updateProject(user.userId, updatedProject)
   }
 
   const handleDescriptionChange = (
@@ -212,22 +260,16 @@ export const Projeto = () => {
     }
   }
 
-  const handleRemoveService = (serviceId) => {
-    // Remove o serviço do estado local
+  const handleRemoveService = (serviceId: number) => {
     const updatedServices = services.filter(
       (service) => service.serviceId !== serviceId,
     )
-    setServices(updatedServices)
-
-    // Atualiza a lista de IDs de serviços no objeto projeto
-    const updatedServiceIds = updatedServices.map(
-      (service) => service.serviceId,
-    )
-    const updatedProject = { ...projeto, servicosId: updatedServiceIds }
-
-    // Chama a função para atualizar o projeto no "banco de dados"
+    const updatedProject = { ...projeto, servicos: updatedServices }
     const updateResult = updateProject(user.userId, updatedProject)
+
     if (updateResult === 'success') {
+      setProjeto(updatedProject) // Atualiza o estado do projeto
+      setServices(updatedServices) // Atualiza o estado dos serviços
       setToastMessage('Serviço removido com sucesso!')
       setShowToast(true)
     } else {
@@ -237,15 +279,13 @@ export const Projeto = () => {
   }
 
   const handleAddService = (newService: Service) => {
-    // Adiciona o novo serviço à lista de serviços do projeto
     const updatedServices = [...services, newService]
-    setServices(updatedServices)
-
     const updatedProject = { ...projeto, servicos: updatedServices }
-
-    // Chama a função para atualizar o projeto no "banco de dados"
     const updateResult = updateProject(user.userId, updatedProject)
+
     if (updateResult === 'success') {
+      setProjeto(updatedProject) // Atualiza o estado do projeto
+      setServices(updatedServices) // Atualiza o estado dos serviços
       setToastMessage('Serviço adicionado com sucesso!')
       setShowToast(true)
     } else {
@@ -278,8 +318,8 @@ export const Projeto = () => {
       <div className="content">
         <Header
           path={[
-            { label: 'Projetos >', path: '/projetos' },
-            { label: 'Dados', path: '/projeto' },
+            { label: 'Projetos /', path: '/projetos' },
+            { label: 'Dados', path: '' },
           ]}
         />
         <div className="projectData">
@@ -482,19 +522,25 @@ export const Projeto = () => {
             <div className="tabelaValores">
               <div className="line">
                 <div className="name">Serviços</div>
-                <div className="value">R$0,00</div>
+                <div className="value">{`R$${totalServicos.toFixed(2)}`}</div>
               </div>
               <div className="line">
-                <div className="name">Gastos do projeto</div>
-                <div className="value">R$0,00</div>
+                <div className="name">Gastos do Projeto</div>
+                <div className="value">{`R$${totalGastosProjeto.toFixed(
+                  2,
+                )}`}</div>
               </div>
               <div className="line">
-                <div className="name">Total do cliente</div>
-                <div className="value">R$0,00</div>
+                <div className="name">Total do Cliente</div>
+                <div className="value">{`R$${totalCliente.toFixed(2)}`}</div>
               </div>
               <div className="line">
                 <div className="name">Lucro</div>
-                <div className="value">R$0,00</div>
+                <div className={`value ${totalLucro < 0 ? 'red' : ''}`}>
+                  {totalLucro < 0
+                    ? `-R$${Math.abs(totalLucro).toFixed(2)}`
+                    : `R$${totalLucro.toFixed(2)}`}
+                </div>
               </div>
             </div>
           </div>

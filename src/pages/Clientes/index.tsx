@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import './style.sass'
 
@@ -8,6 +8,7 @@ import { Header } from '../../components/header'
 import { SearchInput } from '../../components/inputs/search'
 import { Sidebar } from '../../components/sidebar'
 import { ToastNotification } from '../../components/toast-notification'
+import { addToHistory } from '../../database/History'
 import { Client } from '../../database/Types'
 import { ClientModal } from './clientModal'
 
@@ -76,16 +77,20 @@ export const Clientes = () => {
 
           // Adiciona o novo cliente
           insertClient(user.userId, newClient)
-          console.log('Novo cliente adicionado com sucesso: ', newClient)
+          setToastMessage('Novo cliente criado com sucesso')
           setIsModalOpen(false)
 
           // Atualize manualmente o estado da lista de clientes
           const updatedClients = getClients(user.userId)
           setClients(updatedClients)
+
+          // Atualiza o histórico
+          const logMessage = 'Novo cliente adicionado ao sistema'
+          addToHistory(user.userId, logMessage)
         } else {
           // Atualiza um cliente
           updateClient(user.userId, newClientData)
-          console.log('Cliente atualizado com sucesso: ', newClientData)
+          setToastMessage('Dados salvos com sucesso')
           setIsModalOpen(false)
 
           // Atualize manualmente o estado da lista de clientes

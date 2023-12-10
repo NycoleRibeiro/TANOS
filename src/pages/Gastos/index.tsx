@@ -166,16 +166,34 @@ export const Gastos = () => {
   }
 
   const handleAddNewExpense = (newExpenseData: Expenses) => {
-    // Adicionar o novo gasto ao "banco" de dados
-    const result = addExpense(user.userId, newExpenseData)
-
-    if (result === 'success') {
-      // Atualize a lista de gastos na página principal
-      setExpenses([...expenses, newExpenseData])
-      setIsModalOpen(false)
-      setToastMessage('Novo gasto cadastrado com sucesso')
+    if (
+      expenses.some((expense) => expense.expenseId === newExpenseData.expenseId)
+    ) {
+      // Atualiza o gasto existente
+      const result = updateExpense(user.userId, newExpenseData)
+      if (result === 'success') {
+        setExpenses(
+          expenses.map((expense) =>
+            expense.expenseId === newExpenseData.expenseId
+              ? newExpenseData
+              : expense,
+          ),
+        )
+        setIsModalOpen(false)
+        setToastMessage('Gasto atualizado com sucesso')
+      } else {
+        setToastMessage('Falha ao atualizar gasto')
+      }
     } else {
-      setToastMessage('Falha ao cadastrar novo gasto')
+      // Adiciona um novo gasto
+      const result = addExpense(user.userId, newExpenseData)
+      if (result === 'success') {
+        setExpenses([...expenses, newExpenseData])
+        setIsModalOpen(false)
+        setToastMessage('Novo gasto cadastrado com sucesso')
+      } else {
+        setToastMessage('Falha ao cadastrar novo gasto')
+      }
     }
   }
 
@@ -195,6 +213,21 @@ export const Gastos = () => {
     }
   }
 
+  const clearFormData = () => {
+    setFormData({
+      expenseId: 0,
+      pago: false,
+      descricao: '',
+      valor: 0,
+      pagamentoDia: 0,
+      pagamentoMes: 0,
+      pagamentoAno: 0,
+      categoria: '',
+      formaPagamento: 'Dinheiro',
+      recorrencia: 'Única',
+    })
+  }
+
   return (
     <div className="gastos-container">
       <Sidebar activePage="Gastos" />
@@ -206,6 +239,7 @@ export const Gastos = () => {
           onConfirm={handleAddNewExpense}
           onDelete={handleDeleteExpense}
           gasto={formData}
+          clearFormData={clearFormData}
         />
       )}
       {showToast && <ToastNotification type="ok" text={toastMessage} />}

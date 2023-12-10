@@ -10,13 +10,15 @@ import { SearchInput } from '../../components/inputs/search'
 import { Sidebar } from '../../components/sidebar'
 import { ToastNotification } from '../../components/toast-notification'
 
+import { addToHistory } from '../../database/History'
+
 import {
   getServices,
   insertService,
   removeService,
   updateService,
 } from '../../database/Services'
-import { Services } from '../../database/Types'
+import { Service } from '../../database/Types'
 import { getUserData } from '../../loggedUser'
 
 export const Servicos = () => {
@@ -31,9 +33,21 @@ export const Servicos = () => {
     valorFixo: true,
     serviceId: 0,
   })
+
+  const [toastMessage, setToastMessage] = useState('')
   const [showToast, setShowToast] = useState(false)
   const [services, setServices] = useState(user ? getServices(user.userId) : [])
   const [searchTerm, setSearchTerm] = useState('')
+
+  useEffect(() => {
+    if (toastMessage !== '') {
+      setShowToast(true)
+      setTimeout(() => {
+        setShowToast(false)
+        setToastMessage('')
+      }, 5000)
+    }
+  }, [toastMessage])
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term)
@@ -83,9 +97,15 @@ export const Servicos = () => {
           console.log('Novo serviço adicionado com sucesso: ', newService)
           setIsModalOpen(false)
 
+          // Cria um log
+          const logMessage = 'Novo serviço criado no sistema'
+          addToHistory(user.userId, logMessage)
+
           // Atualize manualmente o estado da lista de serviços
           const updatedServices = getServices(user.userId)
           setServices(updatedServices)
+
+          setToastMessage('Serviço criado com sucesso')
         } else {
           // Atualiza um serviço
           updateService(user.userId, formData)
@@ -95,6 +115,8 @@ export const Servicos = () => {
           // Atualize manualmente o estado da lista de serviços
           const updatedServices = getServices(user.userId)
           setServices(updatedServices)
+
+          setToastMessage('Dados salvos com sucesso')
         }
       } else {
         // O usuário não está autenticado, faça algo apropriado aqui
@@ -139,18 +161,14 @@ export const Servicos = () => {
       const updatedServices = getServices(user.userId)
       setServices(updatedServices)
       setIsModalOpen(false)
+      setToastMessage('Serviço removido com sucesso')
     }
   }
 
   return (
     <div className="servicos-container">
       <Sidebar activePage="Servicos" />
-      {showToast && (
-        <ToastNotification
-          type="ok"
-          text="Valor copiado para área de transferência"
-        />
-      )}
+      {showToast && <ToastNotification type="ok" text={toastMessage} />}
 
       <div className="content">
         <Header path={[{ label: 'Serviços', path: '/servicos' }]} />

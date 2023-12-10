@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FilledButton } from '../../components/buttons/filledButton'
-import { getServices } from '../../database/Services'; // Função hipotética para buscar a lista de serviços
+import { getServices } from '../../database/Services'
 import { Service } from '../../database/Types'
 import { getUserData } from '../../loggedUser'
 
@@ -24,13 +24,6 @@ export const ModalNewService: React.FC<ModalNewServiceProps> = ({
 
   const [isValueInputOpen, setIsValueInputOpen] = useState(false)
   const [inputValue, setInputValue] = useState('')
-
-  useEffect(() => {
-    if (user) {
-      const fetchedServices = getServices(user.userId) // Função hipotética para buscar a lista de serviços
-      setServices(fetchedServices)
-    }
-  }, [user])
 
   useEffect(() => {
     if (user) {

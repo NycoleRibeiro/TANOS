@@ -74,3 +74,14 @@ export interface UserProjects {
   userId: number
   projects: Project[]
 }
+
+export interface HistoryEntry {
+  id: number
+  message: string
+  timestamp: string
+}
+
+export interface UserHistory {
+  userId: number
+  history: HistoryEntry[]
+}

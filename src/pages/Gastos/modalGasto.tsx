@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FilledButton } from '../../components/buttons/filledButton'
 import { SingleSelect } from '../../components/inputs/SingleSelect'
 import { TextInput } from '../../components/inputs/TextInput'
@@ -9,12 +9,14 @@ import { getUserData } from '../../loggedUser'
 import './styleModal.sass'
 
 import deleteIcon from '../../assets/images/delete.svg'
+import { ToastNotification } from '../../components/toast-notification'
 
 interface ModalNewExpenseProps {
   onClose: () => void
   onConfirm: (gasto: Expenses) => void
   onDelete: (expenseId: number) => void
   gasto: Expenses
+  clearFormData: () => void
 }
 
 export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
@@ -22,6 +24,7 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
   onConfirm,
   onDelete,
   gasto,
+  clearFormData,
 }) => {
   const user = getUserData()
   const [descricao, setDescricao] = useState(gasto.descricao)
@@ -38,6 +41,28 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
   const [categoria, setCategoria] = useState(gasto.categoria)
   const [formaPagamento, setFormaPagamento] = useState(gasto.formaPagamento)
   const [recorrencia, setRecorrencia] = useState(gasto.recorrencia)
+
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
+
+  const [erroDescricao, setErroDescricao] = useState('')
+  const [erroValor, setErroValor] = useState('')
+  const [erroDia, setErroDia] = useState('')
+  const [erroMes, setErroMes] = useState('')
+  const [erroAno, setErroAno] = useState('')
+  const [erroCategoria, setErroCategoria] = useState('')
+  const [erroFormaPagamento, setErroFormaPagamento] = useState('')
+  const [erroRecorrencia, setErroRecorrencia] = useState('')
+
+  useEffect(() => {
+    if (toastMessage !== '') {
+      setShowToast(true)
+      setTimeout(() => {
+        setShowToast(false)
+        setToastMessage('')
+      }, 5000)
+    }
+  }, [toastMessage])
 
   const handleDescricaoChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -81,20 +106,67 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
     setRecorrencia(selectedItem)
   }
 
+  const limparMensagensErro = () => {
+    setErroDescricao('')
+    setErroValor('')
+    setErroDia('')
+    setErroMes('')
+    setErroAno('')
+    setErroCategoria('')
+    setErroFormaPagamento('')
+    setErroRecorrencia('')
+  }
+
   const handleSave = () => {
+    // Validação dos campos
+    limparMensagensErro()
+
+    let temErro = false
     const valorNumerico = parseFloat(valor.replace(',', '.'))
-    // Valide todos os campos
-    if (
-      !descricao ||
-      isNaN(valorNumerico) ||
-      !pagamentoDia ||
-      !pagamentoMes ||
-      !pagamentoAno
-    ) {
-      // Trate o erro como achar melhor
+    const diaNumerico = parseInt(pagamentoDia, 10)
+    const mesNumerico = parseInt(pagamentoMes, 10)
+    const anoNumerico = parseInt(pagamentoAno, 10)
+
+    if (!descricao) {
+      setErroDescricao('Descrição não pode ser vazia')
+      temErro = true
+    }
+    if (isNaN(valorNumerico) || valorNumerico === 0) {
+      setErroValor('Valor inválido')
+      temErro = true
+    }
+    if (isNaN(diaNumerico) || diaNumerico < 1 || diaNumerico > 31) {
+      setErroDia('Dia inválido')
+      temErro = true
+    }
+    if (isNaN(mesNumerico) || mesNumerico < 1 || mesNumerico > 12) {
+      setErroMes('Mês inválido')
+      temErro = true
+    }
+    if (isNaN(anoNumerico) || anoNumerico < 1) {
+      setErroAno('Ano inválido')
+      temErro = true
+    }
+    if (!categoria) {
+      setErroCategoria('Categoria não pode ser vazia')
+      temErro = true
+    }
+    if (!formaPagamento) {
+      setErroFormaPagamento('Forma de pagamento não pode ser vazia')
+      temErro = true
+    }
+    if (!recorrencia) {
+      setErroRecorrencia('Recorrência não pode ser vazia')
+      temErro = true
+    }
+
+    if (temErro) {
+      setToastMessage('Não foi possível salvar')
       return
     }
 
+    // Se estamos editando um gasto existente, usamos o ID existente
+    // Caso contrário, geramos um novo ID
     const gastoId = gasto.expenseId !== 0 ? gasto.expenseId : getNextExpenseId()
 
     const gastoAtualizado: Expenses = {
@@ -110,6 +182,7 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
       recorrencia,
     }
 
+    clearFormData()
     onConfirm(gastoAtualizado)
   }
 
@@ -126,6 +199,7 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
 
   return (
     <div className="backgroundBlur">
+      {showToast && <ToastNotification type="error" text={toastMessage} />}
       <div className="modalGasto">
         <div className="header">
           {gasto.expenseId === 0 ? 'Editar Gasto' : 'Inserir Novo Gasto'}
@@ -148,6 +222,9 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
               </div>
             )}
           </div>
+          {erroDescricao && (
+            <div className="error-message">{erroDescricao}</div>
+          )}
           <TextInput
             label="Valor"
             placeholder="Digite o valor do gasto"
@@ -155,6 +232,7 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
             inputValue={valor === '0' ? '' : valor.toString()}
             onChange={handleValorChange}
           />
+          {erroValor && <div className="error-message">{erroValor}</div>}
           <div className="info">Data de Pagamento</div>
           <div className="dataPagamento">
             <TextInput
@@ -181,13 +259,19 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
               onChange={handlePagamentoAnoChange}
             />
           </div>
+          {erroDia && <div className="error-message">{erroDia}</div>}
+          {erroMes && <div className="error-message">{erroMes}</div>}
+          {erroAno && <div className="error-message">{erroAno}</div>}
           <SingleSelect
             onSelect={handleRecorrenciaChange}
             placeholder="Recorrência do pagamento"
             label="Recorrência"
             options={['Única', 'Mensal', 'Anual', 'Parcelado']}
-            initialValue={gasto.expenseId === 0 ? '' : recorrencia}
+            initialValue={recorrencia}
           />
+          {erroRecorrencia && (
+            <div className="error-message">{erroRecorrencia}</div>
+          )}
           <TextInput
             label="Categoria"
             placeholder="Digite uma categoria"
@@ -195,16 +279,29 @@ export const ModalNewExpense: React.FC<ModalNewExpenseProps> = ({
             inputValue={categoria}
             onChange={handleCategoriaChange}
           />
+          {erroCategoria && (
+            <div className="error-message">{erroCategoria}</div>
+          )}
           <SingleSelect
             onSelect={handleFormaPagamentoChange}
             placeholder="Forma de pagamento"
             label="Forma de pagamento"
             options={['Dinheiro', 'Crédito', 'Débito', 'PIX', 'Boleto']}
-            initialValue={gasto.expenseId === 0 ? '' : formaPagamento}
+            initialValue={formaPagamento}
           />
+          {erroFormaPagamento && (
+            <div className="error-message">{erroFormaPagamento}</div>
+          )}
         </div>
         <div className="buttons">
-          <FilledButton text="Cancelar" size="100px" onClick={onClose} />
+          <FilledButton
+            text="Cancelar"
+            size="100px"
+            onClick={() => {
+              clearFormData()
+              onClose()
+            }}
+          />
           <FilledButton text="Salvar" size="100px" onClick={handleSave} />
         </div>
       </div>

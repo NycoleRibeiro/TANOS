@@ -1,32 +1,45 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import './style.sass'
-import { Link } from 'react-router-dom';
+
+import BackBtn from '../../assets/images/backBtn.svg'
 
 interface HeaderProps {
-    path: {
-        label: string;
-        path: string;
-    }[];
+  path: {
+    label: string
+    path: string
+  }[]
 }
 
 export const Header: React.FC<HeaderProps> = ({ path }) => {
-    if (path.length > 1) {
+  // Verifica se existem mais de um item no array path
+  const showBackButton = path.length > 1
+
+  return (
+    <div className="header-container">
+      {showBackButton && (
+        <Link to={path[path.length - 2].path}>
+          <img src={BackBtn} alt="Voltar" className="back"/>
+        </Link>
+      )}
+      {path.map((item, index) => {
+        const isLastItem = index === path.length - 1
         return (
-            <div className="header-container">
-                {path.map((item, index) => (
-                    <span key={index}>
-                        <Link className="text" style={{ textDecoration: 'inherit'}} to={item.path}>{item.label}</Link>
-                    </span>
-                ))}
-            </div>
+          <span key={index}>
+            {isLastItem ? (
+              <span className="text">{item.label}</span>
+            ) : (
+              <Link
+                className="text"
+                style={{ textDecoration: 'inherit' }}
+                to={item.path}
+              >
+                {item.label}
+              </Link>
+            )}
+          </span>
         )
-    } else {
-        return (
-            <div className="header-container">
-                <span className="text">
-                    {path[0].label}
-                </span>
-            </div>
-        )
-    }
+      })}
+    </div>
+  )
 }
