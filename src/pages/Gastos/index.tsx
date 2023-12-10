@@ -128,7 +128,8 @@ export const Gastos = () => {
 
   const opcoesAno = gerarOpcoesAno()
 
-  const handlePagoChange = (expenseToUpdate: Expenses) => {
+  const handlePagoChange = (event, expenseToUpdate: Expenses) => {
+    event.stopPropagation()
     // Atualiza o estado de 'pago' do gasto
     const updatedExpense = {
       ...expenseToUpdate,
@@ -294,13 +295,18 @@ export const Gastos = () => {
                     setIsModalOpen(true)
                   }}
                 >
-                  <div className="col1">
+                  <div
+                    className="col1"
+                    onClick={(event) => event.stopPropagation()}
+                  >
                     <input
+                      id={`check-${expense.expenseId}`}
                       type="checkbox"
                       className="PagoCheck"
                       checked={expense.pago}
-                      onChange={() => handlePagoChange(expense)}
+                      onChange={(event) => handlePagoChange(event, expense)}
                     />
+                    <label htmlFor={`check-${expense.expenseId}`}></label>
                   </div>
                   <div className="col2">{expense.descricao}</div>
                   <div className="col3">{formatarValor(expense.valor)}</div>
