@@ -12,6 +12,7 @@ interface TextInputProps {
   icon?: string
   clearText?: boolean
   error?: string
+  isDateField?: boolean
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
@@ -23,12 +24,30 @@ export const TextInput: React.FC<TextInputProps> = ({
   icon,
   clearText = false,
   error,
+  isDateField = false,
 }) => {
   const [focus, setFocus] = useState(false) // Estado para controlar o foco do input, utilizado para questões de estilo
 
-  // Função para lidar com a mudança de valor do input
+  const formatValueAsDate = (value: string) => {
+    const val = value.replace(/\D/g, '')
+    let formattedValue = val
+
+    if (val.length > 2) {
+      formattedValue = val.substring(0, 2) + '/' + val.substring(2)
+    }
+    if (val.length > 4) {
+      formattedValue =
+        formattedValue.substring(0, 5) + '/' + val.substring(4, 8)
+    }
+
+    return formattedValue
+  }
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(event) // Chama a função passada por prop para lidar com a mudança de valor
+    const value = isDateField
+      ? formatValueAsDate(event.target.value)
+      : event.target.value
+    onChange(value, name) // Atualize para passar o valor e o nome do campo
   }
 
   return (
@@ -55,7 +74,7 @@ export const TextInput: React.FC<TextInputProps> = ({
             src={ClearIcon}
             alt=""
             className="clear-icon"
-            onClick={() => {}}
+            onClick={() => onChange('', name)}
           />
         )}
       </div>

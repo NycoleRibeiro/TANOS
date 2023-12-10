@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import './style.sass'
 
 import PlusIcon from '../../assets/images/add.svg'
+import deleteIcon from '../../assets/images/delete.svg'
 import emailIcon from '../../assets/images/email.svg'
 import faceIcon from '../../assets/images/face.svg'
 import instaIcon from '../../assets/images/insta.svg'
@@ -16,9 +17,9 @@ import { SingleSelect } from '../../components/inputs/SingleSelect'
 import { TextInput } from '../../components/inputs/TextInput'
 import { Sidebar } from '../../components/sidebar'
 import { ToastNotification } from '../../components/toast-notification'
+import { addToHistory } from '../../database/History'
 import { ModalNewClient } from './modalNewCliente'
 import { ModalNewGasto } from './modalNewGasto'
-import { addToHistory } from '../../database/History'
 
 import { getClientById } from '../../database/Clients'
 import {
@@ -29,6 +30,7 @@ import {
 } from '../../database/Projects'
 import { getUserData } from '../../loggedUser'
 
+import { FilledButton } from '../../components/buttons/filledButton/index'
 import { Client, Expense, Project, Service } from '../../database/Types'
 import { ModalNewService } from './modalNewService'
 
@@ -154,9 +156,8 @@ export const Projeto = () => {
     }
   }
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target
-    const updatedProject = { ...projeto, [name]: value }
+  const handleInputChange = (value: string, fieldName: string) => {
+    const updatedProject = { ...projeto, [fieldName]: value }
     setProjeto(updatedProject)
     updateProject(user.userId, updatedProject)
   }
@@ -344,6 +345,7 @@ export const Projeto = () => {
               name="dataPedido"
               inputValue={projeto.dataPedido}
               onChange={handleInputChange}
+              isDateField={true}
             />
             <TextInput
               label="Data de entrega"
@@ -351,6 +353,7 @@ export const Projeto = () => {
               name="dataEntrega"
               inputValue={projeto.dataEntrega}
               onChange={handleInputChange}
+              isDateField={true}
             />
 
             <div className="clientBox">
@@ -542,6 +545,21 @@ export const Projeto = () => {
                     : `R$${totalLucro.toFixed(2)}`}
                 </div>
               </div>
+            </div>
+            <div className="buttons">
+              <FilledButton
+                icon={deleteIcon}
+                size="40px"
+                color="#DC362E"
+                onClick={() => {}}
+              />
+              <FilledButton
+                text="Cancelar"
+                size="120px"
+                color="#7A7289"
+                onClick={() => {}}
+              />
+              <FilledButton text="Salvar" size="120px" onClick={() => {}} />
             </div>
           </div>
         </div>
