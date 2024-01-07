@@ -29,11 +29,11 @@ const listaDeServicos: UserServices[] = [
         serviceId: 3,
       },
       {
-        nome: 'Cartão de Visita',
+        nome: 'Cartão de Visita - Design',
         descricao: 'Design de cartão de visita personalizado',
         categoria: 'Design Gráfico',
         valor: 25.0,
-        valorFixo: true,
+        valorFixo: false,
         serviceId: 4,
       },
       {
@@ -83,6 +83,14 @@ const listaDeServicos: UserServices[] = [
         valor: 70.0,
         valorFixo: false,
         serviceId: 10,
+      },
+      {
+        nome: 'Cartão de Visita - Impressão',
+        descricao: 'Impressão de cartão de visita',
+        categoria: 'Impressão',
+        valor: 50.0,
+        valorFixo: false,
+        serviceId: 11,
       },
     ],
   },

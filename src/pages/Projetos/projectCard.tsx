@@ -14,6 +14,20 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   const navigate = useNavigate()
   const [clientName, setClientName] = useState('Cliente não informado')
 
+  // Calcula o total dos serviços
+  const totalServicos = project.servicos.reduce(
+    (acc, servico) => acc + servico.valor,
+    0,
+  )
+
+  // Calcula o total dos gastos do tipo 'Cliente'
+  const totalGastosCliente = project.gastos
+    .filter((gasto) => gasto.tipo === 'Cliente')
+    .reduce((acc, gasto) => acc + gasto.valor, 0)
+
+  // Soma os valores para obter o total cobrado do cliente
+  const totalCliente = totalServicos + totalGastosCliente
+
   useEffect(() => {
     if (project.clienteId !== 0) {
       const client = getClientById(user.userId, project.clienteId)
@@ -33,10 +47,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       <div className="title">
         {project.titulo || 'Nome do Projeto não Informado'}
       </div>
-      <div className="price">
-        R${' '}
-        {project.gastos.reduce((acc, curr) => acc + curr.valor, 0).toFixed(2)}
-      </div>
+      <div className="price">R$ {totalCliente.toFixed(2)}</div>
       <div className="info">
         <span className="date">
           {project.dataEntrega || 'Prazo não informado'}

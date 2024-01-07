@@ -141,7 +141,9 @@ export const Relatorios = () => {
       <div className="content">
         <Header path={[{ label: 'Dashboard', path: '/home' }]} />
         <div className="subheader">
-          <div className="title">Relatórios de Dezembro / 2023</div>
+          <div className="title">
+            Relatórios de {selectedMonthName} / {selectedYear}
+          </div>
           <div className="dataSelection">
             <SingleSelect
               onSelect={handleMonthSelect}

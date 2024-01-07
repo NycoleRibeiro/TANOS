@@ -22,7 +22,22 @@ const listaHistorico: UserHistory[] = [
       {
         id: 4,
         message: 'O projeto Aplicativo de Delivery foi concluído',
-        timestamp: '2023-12-05T17:00:00.000Z',
+        timestamp: '2024-01-05T17:00:00.000Z',
+      },
+      {
+        id: 5,
+        message: 'Novo serviço criado no sistema',
+        timestamp: '2024-01-04T14:45:00.000Z',
+      },
+      {
+        id: 6,
+        message: 'Um novo projeto foi criado',
+        timestamp: '2024-01-02T15:30:00.000Z',
+      },
+      {
+        id: 7,
+        message: 'Novo cliente adicionado ao sistema',
+        timestamp: '2024-01-03T10:00:00.000Z',
       },
     ],
   },

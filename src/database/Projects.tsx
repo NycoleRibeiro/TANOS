@@ -9,30 +9,30 @@ const listaDeProjetos: UserProjects[] = [
         titulo: 'Redesign do Site Corporativo',
         descricao:
           'Atualização do layout e estrutura do site corporativo da Empresa ABC.',
-        status: 'Não iniciado',
-        dataPedido: '15/04/2023',
-        dataEntrega: '30/06/2023',
+        status: 'Concluído',
+        dataPedido: '15/11/2023',
+        dataEntrega: '30/12/2023',
         clienteId: 1,
         servicos: [
           {
-            nome: 'Capa para Facebook',
-            descricao: 'Criação do design de uma capa para o Facebook',
-            categoria: 'Design Gráfico',
-            valor: 40.0,
-            valorFixo: true,
-            serviceId: 1,
+            nome: 'UI/UX Consultoria',
+            descricao: 'Consultoria para melhorar a experiência do usuário',
+            categoria: 'UI/UX Design',
+            valor: 50.0,
+            valorFixo: false,
+            serviceId: 3,
           },
           {
-            nome: 'Logo Design',
-            descricao: 'Design de logotipo profissional',
-            categoria: 'Design Gráfico',
-            valor: 60.0,
-            valorFixo: true,
-            serviceId: 2,
+            nome: 'Redesign de Website',
+            descricao: 'Redesenho de sites existentes',
+            categoria: 'UI/UX Design',
+            valor: 100.0,
+            valorFixo: false,
+            serviceId: 10,
           },
         ],
         gastos: [
-          { titulo: 'Licença de Imagens', tipo: 'Projeto', valor: 150.0 },
+          { titulo: 'Licença de Imagens', tipo: 'Projeto', valor: 30.0 },
           { titulo: 'Hospedagem Anual', tipo: 'Cliente', valor: 300.0 },
         ],
         toDoList: [
@@ -46,8 +46,8 @@ const listaDeProjetos: UserProjects[] = [
         descricao:
           'Desenvolvimento de estratégia de marketing digital e SEO para a Empresa XYZ.',
         status: 'Em andamento',
-        dataPedido: '01/05/2023',
-        dataEntrega: '01/08/2023',
+        dataPedido: '28/12/2023',
+        dataEntrega: '20/01/2024',
         clienteId: 2,
         servicos: [
           {
@@ -59,17 +59,17 @@ const listaDeProjetos: UserProjects[] = [
             serviceId: 1,
           },
           {
-            nome: 'Logo Design',
-            descricao: 'Design de logotipo profissional',
+            nome: 'Banner Publicitário',
+            descricao: 'Criação de banners publicitários',
             categoria: 'Design Gráfico',
-            valor: 60.0,
+            valor: 35.0,
             valorFixo: true,
-            serviceId: 2,
+            serviceId: 7,
           },
         ],
         gastos: [
-          { titulo: 'Anúncios Facebook', tipo: 'Projeto', valor: 500.0 },
-          { titulo: 'Software de SEO', tipo: 'Projeto', valor: 200.0 },
+          { titulo: 'Anúncios Meta', tipo: 'Cliente', valor: 500.0 },
+          { titulo: 'Licença de Imagem', tipo: 'Projeto', valor: 20.0 },
         ],
         toDoList: [
           { check: true, descricao: 'Briefing com o cliente' },
@@ -87,17 +87,17 @@ const listaDeProjetos: UserProjects[] = [
         descricao:
           'Criação de um aplicativo de delivery para a cadeia de restaurantes FoodNow.',
         status: 'Concluído',
-        dataPedido: '10/03/2023',
-        dataEntrega: '20/05/2023',
+        dataPedido: '10/08/2023',
+        dataEntrega: '04/01/2024',
         clienteId: 3,
         servicos: [
           {
-            nome: 'Capa para Facebook',
-            descricao: 'Criação do design de uma capa para o Facebook',
-            categoria: 'Design Gráfico',
-            valor: 40.0,
-            valorFixo: true,
-            serviceId: 1,
+            nome: 'Prototipagem de Aplicativos',
+            descricao: 'Criação de protótipos interativos de aplicativos',
+            categoria: 'UI/UX Design',
+            valor: 1200.0,
+            valorFixo: false,
+            serviceId: 8,
           },
           {
             nome: 'Logo Design',
@@ -109,7 +109,7 @@ const listaDeProjetos: UserProjects[] = [
           },
         ],
         gastos: [
-          { titulo: 'Licença de Software', tipo: 'Projeto', valor: 1000.0 },
+          { titulo: 'Licença de Software', tipo: 'Projeto', valor: 32.0 },
           { titulo: 'Serviços de Cloud', tipo: 'Cliente', valor: 1500.0 },
         ],
         toDoList: [
@@ -125,8 +125,8 @@ const listaDeProjetos: UserProjects[] = [
         descricao:
           'Projeto completo de rebranding para a startup de tecnologia TechInnov.',
         status: 'Não iniciado',
-        dataPedido: '05/07/2023',
-        dataEntrega: '15/10/2023',
+        dataPedido: '05/01/2024',
+        dataEntrega: '30/01/2024',
         clienteId: 4,
         servicos: [
           {
@@ -145,11 +145,50 @@ const listaDeProjetos: UserProjects[] = [
             valorFixo: true,
             serviceId: 2,
           },
+          {
+            nome: 'Ilustração Digital',
+            descricao: 'Ilustrações digitais personalizadas',
+            categoria: 'Design Gráfico',
+            valor: 50.0,
+            valorFixo: true,
+            serviceId: 5,
+          },
         ],
-        gastos: [
-          { titulo: 'Pesquisa de Mercado', tipo: 'Projeto', valor: 300.0 },
-          { titulo: 'Consultoria de Branding', tipo: 'Cliente', valor: 1500.0 },
+        gastos: [],
+        toDoList: [
+          { check: false, descricao: 'Workshop de identidade da marca' },
+          { check: false, descricao: 'Desenvolvimento do logotipo' },
+          { check: false, descricao: 'Criação do manual da marca' },
         ],
+      },
+      {
+        projectId: 5,
+        titulo: 'Cartões de Visita',
+        descricao:
+          'A cliente solicitou um cartão de visita para o seu negócio de Nail Designer, contendo profissão, WhatsApp e Instagram. \n\nWpp: (99) 99999-9999 \nInsta: @fernandaNailDesign \n\nTO-DO LIST\n\n[  ] Design minimalista e feminino \n[  ] Impressão de 100 cartões - Papel 180g/m² Fotográfico',
+        status: 'Não iniciado',
+        dataPedido: '02/01/2024',
+        dataEntrega: '15/01/2024',
+        clienteId: 4,
+        servicos: [
+          {
+            nome: 'Cartão de Visita - Design',
+            descricao: 'Design de cartão de visita personalizado',
+            categoria: 'Design Gráfico',
+            valor: 25.0,
+            valorFixo: false,
+            serviceId: 4,
+          },
+          {
+            nome: 'Cartão de Visita - Impressão',
+            descricao: 'Impressão de cartão de visita',
+            categoria: 'Impressão',
+            valor: 48.0,
+            valorFixo: false,
+            serviceId: 11,
+          },
+        ],
+        gastos: [{ titulo: 'Impressão', tipo: 'Projeto', valor: 4.8 }],
         toDoList: [
           { check: false, descricao: 'Workshop de identidade da marca' },
           { check: false, descricao: 'Desenvolvimento do logotipo' },
